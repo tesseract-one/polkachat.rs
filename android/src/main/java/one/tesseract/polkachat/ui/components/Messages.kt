@@ -17,43 +17,39 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Messages(messages: List<String>, modifier: Modifier = Modifier) {
-    Box(
+    val scrollState = rememberLazyListState()
+
+    LaunchedEffect(key1 = messages.size) {
+        if (messages.isNotEmpty()) {
+            scrollState.animateScrollToItem(messages.size - 1)
+        }
+    }
+
+    LazyColumn(
+        state = scrollState,
+        verticalArrangement = Arrangement.Bottom,
         modifier = modifier.fillMaxSize()
     ) {
-        val scrollState = rememberLazyListState()
-
-        LaunchedEffect(key1 = messages.size) {
-            if (messages.isNotEmpty()) {
-                scrollState.animateScrollToItem(messages.size - 1)
-            }
-        }
-
-        LazyColumn(
-            state = scrollState,
-            verticalArrangement = Arrangement.Bottom,
-            modifier = Modifier.fillMaxHeight()
-        ) {
-            items(items = messages) {
-                Card(
-                    elevation = 10.dp,
-                    shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Spacer(modifier = Modifier.requiredSize(8.dp)) //don't use align. CircularProgressIndicator is buggy with it
-                        CircularProgressIndicator(
-                            strokeWidth = 2.dp,
-                            modifier = Modifier.requiredSize(18.dp)
-                        )
-                        Text(
-                            text = "Message: $it",
-                            textAlign = TextAlign.Left,
-                            modifier = Modifier
-                                .padding(all = 4.dp)
-                                .padding(horizontal = 4.dp)
-                        )
-                    }
+        items(items = messages) {
+            Card(
+                elevation = 10.dp,
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(modifier = Modifier.requiredSize(8.dp)) //don't use align. CircularProgressIndicator is buggy with it
+                    CircularProgressIndicator(
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.requiredSize(18.dp)
+                    )
+                    Text(
+                        text = "Message: $it",
+                        textAlign = TextAlign.Left,
+                        modifier = Modifier
+                            .padding(all = 4.dp)
+                            .padding(horizontal = 4.dp)
+                    )
                 }
             }
         }

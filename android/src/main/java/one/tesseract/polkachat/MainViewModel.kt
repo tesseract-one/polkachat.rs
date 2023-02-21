@@ -13,6 +13,13 @@ class MainViewModel: ViewModel() {
     private val _account = mutableStateOf<String?>(null)
     val account: MutableState<String?> = _account
 
+    init {
+        messages.add("One")
+        messages.add("Two")
+        messages.add("Three")
+        messages.add("Four")
+    }
+
     fun sendMessage(message: String) {
         messages.add(message)
     }

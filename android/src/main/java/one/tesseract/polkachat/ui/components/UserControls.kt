@@ -18,7 +18,9 @@ fun UserControls(accountId: String, send: (String) -> Unit) {
         val message = remember {
             mutableStateOf("")
         }
-        Text(text = "Account ID: $accountId")
+        Text(
+            text = "Account ID: $accountId",
+            modifier = Modifier.padding(vertical = 8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextField(value = message.value, onValueChange = {
                 message.value = it

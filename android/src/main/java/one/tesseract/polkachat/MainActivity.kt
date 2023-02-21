@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -59,12 +60,14 @@ class MainActivity : ComponentActivity() {
                             messages = vm.messages, modifier = Modifier.weight(1f)
                         )
 
-                        AnimatedContent(targetState = vm.account.value) { acid ->
-                            if (acid != null) {
-                                UserControls(accountId = acid, send = vm::sendMessage)
-                            } else {
-                                SignIn {
-                                    vm.account.value = "myacc"
+                        Box(modifier = Modifier.padding(vertical = 8.dp)) {
+                            AnimatedContent(targetState = vm.account.value) { acid ->
+                                if (acid != null) {
+                                    UserControls(accountId = acid, send = vm::sendMessage)
+                                } else {
+                                    SignIn {
+                                        vm.account.value = "myacc"
+                                    }
                                 }
                             }
                         }
