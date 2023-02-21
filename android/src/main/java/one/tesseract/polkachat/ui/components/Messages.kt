@@ -1,5 +1,6 @@
 package one.tesseract.polkachat.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +15,9 @@ import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun Messages(messages: List<String>, modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxHeight()) {
+    Box(
+        modifier = modifier.fillMaxHeight()
+    ) {
         val scrollState = rememberLazyListState()
 
         LaunchedEffect(key1 = messages.size) {
@@ -23,7 +26,11 @@ fun Messages(messages: List<String>, modifier: Modifier = Modifier) {
             }
         }
 
-        LazyColumn(state = scrollState) {
+        LazyColumn(
+            state = scrollState,
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier.fillMaxHeight()
+        ) {
             items(items = messages) {
                 Text(
                     text = "Message: $it",
