@@ -1,22 +1,22 @@
 package one.tesseract.polkachat.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun Messages(messages: List<String>, modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.fillMaxHeight()
+        modifier = modifier.fillMaxSize()
     ) {
         val scrollState = rememberLazyListState()
 
@@ -32,11 +32,20 @@ fun Messages(messages: List<String>, modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxHeight()
         ) {
             items(items = messages) {
-                Text(
-                    text = "Message: $it",
-                    textAlign = TextAlign.Left,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Card(
+                    elevation = 10.dp,
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                ) {
+                    Text(
+                        text = "Message: $it",
+                        textAlign = TextAlign.Left,
+                        modifier = Modifier
+                            .padding(all = 4.dp)
+                            .padding(horizontal = 4.dp)
+                    )
+                }
             }
         }
     }
