@@ -1,10 +1,18 @@
 package one.tesseract.polkachat
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import one.tesseract.polkachat.ui.main.MainFragment
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import one.tesseract.polkachat.ui.theme.PolkaChat
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
     companion object {
         init {
             System.loadLibrary("polkachat")
@@ -15,13 +23,31 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance())
-                .commitNow()
+        setContent {
+            PolkaChat {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    Greeting("Android")
+                }
+            }
         }
 
         test()
+    }
+}
+
+@Composable
+fun Greeting(name: String) {
+    Text(text = "Hello $name!")
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    PolkaChat {
+        Greeting("Android")
     }
 }
