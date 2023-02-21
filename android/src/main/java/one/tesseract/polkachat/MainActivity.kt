@@ -56,6 +56,11 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
 
+                        Text(
+                            text = "This dApp is a simple chat room made with smart contracts on the Polkadot network.",
+                            modifier = Modifier.padding(bottom = 24.dp)
+                        )
+
                         Messages(
                             messages = vm.messages, modifier = Modifier.weight(1f)
                         )
