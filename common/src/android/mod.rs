@@ -1,3 +1,5 @@
+mod core;
+
 use jni::objects::{JObject, JClass, JString};
 use jni::JNIEnv;
 use jni_fn::jni_fn;

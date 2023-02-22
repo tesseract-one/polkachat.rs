@@ -10,3 +10,8 @@ mod android;
 #[cfg(target_os = "ios")]
 mod ios;
 
+mod core;
+mod delegate;
+mod error;
+
+pub (crate) use crate::core::Core;

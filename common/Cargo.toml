@@ -9,6 +9,7 @@ edition = "2021"
 
 [dependencies]
 async-trait = "0.1"
+futures = "0.3.26"
 
 thiserror = "1.0.31"
 log = "0.4.17"

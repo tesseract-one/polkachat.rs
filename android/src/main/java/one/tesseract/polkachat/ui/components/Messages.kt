@@ -28,7 +28,7 @@ fun Messages(messages: List<String>, modifier: Modifier = Modifier) {
     LazyColumn(
         state = scrollState,
         verticalArrangement = Arrangement.Bottom,
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
     ) {
         items(items = messages) {
             Card(

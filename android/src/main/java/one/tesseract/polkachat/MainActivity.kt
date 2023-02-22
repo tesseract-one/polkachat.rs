@@ -9,34 +9,42 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.future.asDeferred
+import kotlinx.coroutines.launch
+import one.tesseract.polkachat.rust.Core
 import one.tesseract.polkachat.ui.components.Messages
 import one.tesseract.polkachat.ui.components.SignIn
 import one.tesseract.polkachat.ui.components.UserControls
 import one.tesseract.polkachat.ui.theme.PolkaChatTheme
 
 class MainActivity : ComponentActivity() {
-    companion object {
-        init {
-            System.loadLibrary("polkachat")
-        }
-    }
-
     external fun test()
+
+    lateinit var core: Core
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        this.core = Core.create(application)
+
         val vm = ViewModelProvider(this).get(MainViewModel::class.java)
+        vm.core = core
 
         setContent {
             PolkaChatTheme {
@@ -62,17 +70,18 @@ class MainActivity : ComponentActivity() {
                         )
 
                         Messages(
-                            messages = vm.messages, modifier = Modifier.weight(1f)
+                            messages = vm.messages,
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxSize()
                         )
 
                         Box(modifier = Modifier.padding(vertical = 8.dp)) {
-                            AnimatedContent(targetState = vm.account.value) { acid ->
-                                if (acid != null) {
-                                    UserControls(accountId = acid, send = vm::sendMessage)
+                            AnimatedContent(targetState = vm.account.value) { account ->
+                                if (account != null) {
+                                    UserControls(account = account, send = vm::sendMessage)
                                 } else {
-                                    SignIn {
-                                        vm.account.value = "myacc"
-                                    }
+                                    SignIn(vm::login)
                                 }
                             }
                         }
@@ -81,6 +90,6 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        test()
+        //test()
     }
 }

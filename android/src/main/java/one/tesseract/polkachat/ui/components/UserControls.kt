@@ -13,13 +13,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun UserControls(accountId: String, send: (String) -> Unit) {
+fun UserControls(account: String, send: (String) -> Unit) {
     Column {
         val message = remember {
             mutableStateOf("")
         }
         Text(
-            text = "Account ID: $accountId",
+            text = "Account ID: $account",
             modifier = Modifier.padding(vertical = 8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextField(value = message.value, onValueChange = {
