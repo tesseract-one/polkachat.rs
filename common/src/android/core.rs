@@ -48,6 +48,8 @@ pub fn account<'a>(env: JNIEnv<'a>, this: JObject<'a>) -> JObject<'a> {
             let env = vm.get_env()?;
             account.map(|account| {
                 //account.public_key
+                //let pk: sr25519::Public = account.public_key.as_slice().try_into().unwrap();
+                //let sss:String = pk.to_ss58check();
                 "thisiskeyplaceholderconvertlater".to_owned()
             }).and_then(|pubkey| {
                 env.new_string(&pubkey).and_then(|jstr| {

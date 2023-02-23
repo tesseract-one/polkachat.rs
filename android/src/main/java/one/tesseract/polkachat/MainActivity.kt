@@ -9,23 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.coroutines.future.asDeferred
-import kotlinx.coroutines.launch
 import one.tesseract.polkachat.rust.Core
 import one.tesseract.polkachat.ui.components.Messages
 import one.tesseract.polkachat.ui.components.SignIn
@@ -48,40 +37,54 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             PolkaChatTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Column(
+                val scaffoldState: ScaffoldState = rememberScaffoldState()
+
+                LaunchedEffect(key1 = true) {
+                    vm.failure.collect {
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            message = it
+                        )
+                    }
+                }
+
+                Scaffold(scaffoldState = scaffoldState) { padding ->
+                    // A surface container using the 'background' color from the theme
+                    Surface(
+                        color = MaterialTheme.colors.background,
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(all = 24.dp)
+                            .padding(padding)
+                            .fillMaxSize(),
                     ) {
-                        Text(
-                            text = "Polkadot Demo dApp",
-                            fontSize = 24.sp,
-                            modifier = Modifier.padding(bottom = 24.dp)
-                        )
-
-                        Text(
-                            text = "This dApp is a simple chat room made with smart contracts on the Polkadot network.",
-                            modifier = Modifier.padding(bottom = 24.dp)
-                        )
-
-                        Messages(
-                            messages = vm.messages,
+                        Column(
                             modifier = Modifier
-                                .weight(1f)
                                 .fillMaxSize()
-                        )
+                                .padding(all = 24.dp)
+                        ) {
+                            Text(
+                                text = "Polkadot Demo dApp",
+                                fontSize = 24.sp,
+                                modifier = Modifier.padding(bottom = 24.dp)
+                            )
 
-                        Box(modifier = Modifier.padding(vertical = 8.dp)) {
-                            AnimatedContent(targetState = vm.account.value) { account ->
-                                if (account != null) {
-                                    UserControls(account = account, send = vm::sendMessage)
-                                } else {
-                                    SignIn(vm::login)
+                            Text(
+                                text = "This dApp is a simple chat room made with smart contracts on the Polkadot network.",
+                                modifier = Modifier.padding(bottom = 24.dp)
+                            )
+
+                            Messages(
+                                messages = vm.messages,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxSize()
+                            )
+
+                            Box(modifier = Modifier.padding(vertical = 8.dp)) {
+                                AnimatedContent(targetState = vm.account.value) { account ->
+                                    if (account != null) {
+                                        UserControls(account = account, send = vm::sendMessage)
+                                    } else {
+                                        SignIn(vm::login)
+                                    }
                                 }
                             }
                         }
