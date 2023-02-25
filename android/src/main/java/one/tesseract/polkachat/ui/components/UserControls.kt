@@ -27,7 +27,9 @@ fun UserControls(account: String, send: (String) -> Unit) {
             })
             Spacer(modifier = Modifier.width(16.dp))
             Button(onClick = {
-                send(message.value)
+                val msg = message.value
+                message.value = ""
+                send(msg)
             }) {
                 Text(
                     text = "Send",

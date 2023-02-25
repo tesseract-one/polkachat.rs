@@ -11,8 +11,10 @@ class Core(handle: Long): RustObject(handle) {
         }
 
         @JvmStatic
-        external fun create(/*ui: UI, */application: Application): Core
+        external fun create(/*ui: UI, */application: Application, loader: ClassLoader): Core
     }
 
     external fun account(): CompletableFuture<String>
+    external fun messages(): CompletableFuture<List<String>>
+    external fun send(message: String): CompletableFuture<Unit>
 }

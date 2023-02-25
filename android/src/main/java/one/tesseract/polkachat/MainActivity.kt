@@ -22,18 +22,12 @@ import one.tesseract.polkachat.ui.components.UserControls
 import one.tesseract.polkachat.ui.theme.PolkaChatTheme
 
 class MainActivity : ComponentActivity() {
-    external fun test()
-
-    lateinit var core: Core
-
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        this.core = Core.create(application)
-
-        val vm = ViewModelProvider(this).get(MainViewModel::class.java)
-        vm.core = core
+        val core = Core.create(application, this.javaClass.classLoader!!)
+        val vm = ViewModelProvider(this, MainViewModelFactory(core)).get(MainViewModel::class.java)
 
         setContent {
             PolkaChatTheme {
@@ -92,7 +86,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        //test()
     }
 }

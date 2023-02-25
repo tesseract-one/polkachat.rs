@@ -4,16 +4,17 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.future.asDeferred
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import one.tesseract.polkachat.rust.Core
 
-class MainViewModel : ViewModel() {
-    lateinit var core: Core
-
+//TODO: double check that errors are caught everywhere
+class MainViewModel(private val core: Core) : ViewModel() {
     private val _messages = mutableStateListOf<String>()
     val messages: List<String> = _messages
 
@@ -24,10 +25,11 @@ class MainViewModel : ViewModel() {
     val failure: SharedFlow<String> = _failure
 
     init {
-        _messages.add("One")
-        _messages.add("Two")
-        _messages.add("Three")
-        _messages.add("Four")
+        val messagesState = _messages
+        this.viewModelScope.launch {
+            val messages = core.messages().await()
+            messagesState.addAll(messages)
+        }
     }
 
     private suspend fun error(message: String) {
@@ -48,6 +50,25 @@ class MainViewModel : ViewModel() {
     }
 
     fun sendMessage(message: String) {
-        _messages.add(message)
+        viewModelScope.launch {
+            try {
+                core.send(message).await()
+            } catch (e: Exception) {
+                @Suppress("NAME_SHADOWING") val message = e.message ?: ""
+                if (!message.contains("Cancelled Tesseract error")) {
+                    error(message)
+                }
+            }
+        }
+    }
+}
+
+class MainViewModelFactory(private val core: Core) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if(modelClass.isAssignableFrom(MainViewModel::class.java)){
+            @Suppress("UNCHECKED_CAST")
+            return MainViewModel(core) as T
+        }
+        throw TypeCastException("Can't create view model ${MainViewModel::class.java.name} and cast to ${modelClass.name}")
     }
 }

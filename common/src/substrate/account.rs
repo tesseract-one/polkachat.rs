@@ -1,0 +1,1 @@
+pub (crate) type Account = tesseract_protocol_substrate::GetAccountResponse;

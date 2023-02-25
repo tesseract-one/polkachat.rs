@@ -1,5 +1,6 @@
 #![feature(iterator_try_collect)]
 #![feature(result_option_inspect)]
+#![feature(async_closure)]
 
 #[macro_use]
 extern crate log;
@@ -13,5 +14,10 @@ mod ios;
 mod core;
 mod delegate;
 mod error;
+mod substrate;
+mod contract;
+
+pub (crate) use crate::error::Error;
+pub (crate) use crate::error::Result;
 
 pub (crate) use crate::core::Core;

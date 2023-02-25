@@ -1,5 +1,7 @@
 use thiserror::Error;
 
+use tokio::task::JoinError;
+
 #[derive(Error, Debug)]
 pub (crate) enum Error {
     #[cfg(target_os = "android")]
@@ -15,7 +17,16 @@ pub (crate) enum Error {
     CError(#[from] tesseract_utils::error::CError),
 
     #[error("Tesseract error: {0}")]
-    Tesseract(#[from] tesseract::Error)
+    Tesseract(#[from] tesseract::Error),
+
+    #[error("Invalid public key")]
+    PublicKey,
+
+    #[error("Substrate error: {0}")]
+    Substrate(#[from] subxt::Error),
+
+    #[error("Tokio Join Error: {0}")]
+    TokioJoin(#[from] JoinError)
 }
 
 pub (crate) type Result<T> = std::result::Result<T, Error>;
