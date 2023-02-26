@@ -89,13 +89,13 @@ pub fn messages<'a>(env: JNIEnv<'a>, this: JObject<'a>) -> JObject<'a> {
         Ok(this.messages().map(move |messages| {
             let env = vm.get_env()?;
             messages.and_then(|messages| {
-                let messages: Vec<JString> = messages.into_iter().map(|message| {
+                let messages = messages.into_iter().map(|message| {
                     env.new_string(&message).map_err(Error::from)
-                }).try_collect()?;
+                });
 
                 let class = env.find_class("java/lang/String")?;
 
-                let list = env.new_list_from_iter(class, messages.into_iter())?;
+                let list = env.try_collect_iter_into_list(class, messages)?;
                 let list = env.new_global_ref(list)?;
 
                 Ok(list)
