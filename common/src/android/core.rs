@@ -3,7 +3,7 @@ use std::sync::Arc;
 use futures::FutureExt;
 
 use jni::{
-    objects::{JObject, JClass, JString},
+    objects::{JObject, JClass, JString, JList},
     JNIEnv
 };
 use jni_fn::jni_fn;
@@ -80,7 +80,7 @@ pub fn account<'a>(env: JNIEnv<'a>, this: JObject<'a>) -> JObject<'a> {
 
 #[jni_fn("one.tesseract.polkachat.rust.Core")]
 pub fn messages<'a>(env: JNIEnv<'a>, this: JObject<'a>) -> JObject<'a> {
-    use super::env::EnvExt;
+    use super::iter::ExactSizeIteratorJava;
 
     deresultify(&env, || {
         let this = Core::from_java_ref(this, &env)?;
@@ -95,7 +95,7 @@ pub fn messages<'a>(env: JNIEnv<'a>, this: JObject<'a>) -> JObject<'a> {
 
                 let class = env.find_class("java/lang/String")?;
 
-                let list = env.try_collect_iter_into_list(class, messages)?;
+                let list: JList = messages.try_collect_java(&env, class)?;
                 let list = env.new_global_ref(list)?;
 
                 Ok(list)
