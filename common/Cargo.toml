@@ -45,7 +45,7 @@ stderrlog = "0.5.4"
 tesseract_utils = { git = "https://github.com/tesseract-one/Tesseract.swift", branch = "master" }
 tesseract_client = { git = "https://github.com/tesseract-one/Tesseract.swift", branch = "master" }
 
-[build-dependencies]
+[target.'cfg(target_os = "ios")'.build-dependencies]
 cbindgen = "0.24"
 
 [lib]
