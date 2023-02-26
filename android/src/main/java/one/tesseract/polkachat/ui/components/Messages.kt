@@ -14,13 +14,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun Messages(messages: List<String>, modifier: Modifier = Modifier) {
+fun Messages(messages: List<String>, modifier: Modifier = Modifier, scrollTrigger: Flow<Unit>? = null) {
     val scrollState = rememberLazyListState()
 
     LaunchedEffect(key1 = messages.size) {
         if (messages.isNotEmpty()) {
+            scrollState.animateScrollToItem(messages.size - 1)
+        }
+    }
+
+    LaunchedEffect(key1 = scrollTrigger) {
+        scrollTrigger?.collect {
             scrollState.animateScrollToItem(messages.size - 1)
         }
     }

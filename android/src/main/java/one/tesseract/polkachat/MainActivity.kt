@@ -15,6 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flowOf
 import one.tesseract.polkachat.rust.Core
 import one.tesseract.polkachat.ui.components.Messages
 import one.tesseract.polkachat.ui.components.SignIn
@@ -54,6 +58,18 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxSize()
                                 .padding(all = 24.dp)
                         ) {
+                            val scrollTrigger = remember {
+                                MutableSharedFlow<Unit>()
+                            }
+
+                            var userControlsShown by remember {
+                                mutableStateOf(false)
+                            }
+
+                            LaunchedEffect(key1 = userControlsShown) {
+                                scrollTrigger.emit(Unit)
+                            }
+
                             Text(
                                 text = "Polkadot Demo dApp",
                                 fontSize = 24.sp,
@@ -67,6 +83,7 @@ class MainActivity : ComponentActivity() {
 
                             Messages(
                                 messages = vm.messages,
+                                scrollTrigger = scrollTrigger,
                                 modifier = Modifier
                                     .weight(1f)
                                     .fillMaxSize()
@@ -75,8 +92,16 @@ class MainActivity : ComponentActivity() {
                             Box(modifier = Modifier.padding(vertical = 8.dp)) {
                                 AnimatedContent(targetState = vm.account.value) { account ->
                                     if (account != null) {
+                                        if (this.transition.currentState == this.transition.targetState) {
+                                            userControlsShown = true
+                                        }
+
                                         UserControls(account = account, send = vm::sendMessage)
                                     } else {
+                                        if (this.transition.currentState == this.transition.targetState) {
+                                            userControlsShown = false
+                                        }
+
                                         SignIn(vm::login)
                                     }
                                 }
