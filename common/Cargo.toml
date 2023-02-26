@@ -46,6 +46,7 @@ tesseract_utils = { git = "https://github.com/tesseract-one/Tesseract.swift", br
 tesseract_client = { git = "https://github.com/tesseract-one/Tesseract.swift", branch = "master" }
 
 [build-dependencies]
+build-target = "0.4.0"
 cbindgen = "0.24"
 
 [lib]
