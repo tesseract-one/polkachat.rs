@@ -15,10 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.flowOf
 import one.tesseract.polkachat.rust.Core
 import one.tesseract.polkachat.ui.components.Messages
 import one.tesseract.polkachat.ui.components.SignIn
