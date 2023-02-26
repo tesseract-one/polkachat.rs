@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.future.asDeferred
@@ -27,8 +28,12 @@ class MainViewModel(private val core: Core) : ViewModel() {
     init {
         val messagesState = _messages
         this.viewModelScope.launch {
-            val messages = core.messages().await()
-            messagesState.addAll(messages)
+            while (true) {
+                val messages = core.messages().await()
+                messagesState.clear()
+                messagesState.addAll(messages)
+                delay(5000L)
+            }
         }
     }
 
