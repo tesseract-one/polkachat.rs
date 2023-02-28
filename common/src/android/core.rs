@@ -7,7 +7,7 @@ use jni::{
 use jni_fn::jni_fn;
 
 use interop_android::{
-    future::into_java::FutureJava,
+    future::{FutureExtJava, IntoJava},
     JavaDesc, JavaWrappableDesc, JavaWrappable, deresultify
 };
 
@@ -17,8 +17,6 @@ use crate::{
     error::Error,
     Core
 };
-
-use super::future::FutureExtJava;
 
 impl JavaDesc for Core {
     fn java_class<'a>(&'a self) -> &'a str {
