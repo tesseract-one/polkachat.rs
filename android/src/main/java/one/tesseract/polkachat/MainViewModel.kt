@@ -19,8 +19,8 @@ import one.tesseract.polkachat.rust.Core
 
 //TODO: double check that errors are caught everywhere
 class MainViewModel(private val core: Core) : ViewModel() {
-    private val _messages = mutableStateListOf<String>()
-    val messages: List<String> = _messages
+    private val _messages = mutableStateListOf<Message>()
+    val messages: List<Message> = _messages
 
     private val _account = mutableStateOf<String?>(null)
     val account: State<String?> = _account
@@ -31,18 +31,15 @@ class MainViewModel(private val core: Core) : ViewModel() {
     init {
         val messagesState = _messages
         this.viewModelScope.launch {
-            while (true) {
-                try {
-                    val messages = core.messages().await()
-                    messagesState.clear()
-                    messagesState.addAll(messages)
-                } catch (e: Exception) {
-                    val message = e.message ?: ""
-                    if (!message.contains("Cancelled Tesseract error")) {
-                        error(message)
-                    }
+            try {
+                val committedSize = messagesState.filterIsInstance<Message.CommittedMessage>().size
+                val messages = core.messages(committedSize).await().map { Message.CommittedMessage(it) }
+                messagesState.addAll(messages)
+            } catch (e: Exception) {
+                val message = e.message ?: ""
+                if (!message.contains("Cancelled Tesseract error")) {
+                    error(message)
                 }
-                delay(5000L)
             }
         }
     }
@@ -65,14 +62,21 @@ class MainViewModel(private val core: Core) : ViewModel() {
     }
 
     fun sendMessage(message: String) {
+        val message = Message.SubmittedMessage(message)
+
         viewModelScope.launch {
             try {
-                core.send(message).await()
+                _messages.add(message)
+                core.send(message.text).await()
+                val index = _messages.lastIndexOf(message)
+                _messages[index] = message.intoCommitted()
             } catch (e: Exception) {
-                @Suppress("NAME_SHADOWING") val message = e.message ?: ""
-                if (!message.contains("Cancelled Tesseract error")) {
-                    error(message)
+                @Suppress("NAME_SHADOWING") val error = e.message ?: ""
+                if (!error.contains("panicked")) /*we can't know more due to subxt::Signer limitations */ {
+                    error(error)
                 }
+
+                _messages.remove(message)
             }
         }
     }

@@ -65,14 +65,14 @@ impl Core {
         Ok(pk.to_ss58check())
     }
 
-    pub (crate) async fn messages(self: Arc<Self>) -> Result<Vec<String>> {
+    pub (crate) async fn messages(self: Arc<Self>, from: u32) -> Result<Vec<String>> {
         debug!("About to featch messages");
         let api = Arc::clone(&self).api().await?;
         debug!("Got the API to fetch messages");
         Ok(self.runtime.spawn( async move {
             debug!("Fetching messages inside runtime");
             let len = api.len().await?;
-            api.get(0, len).await
+            api.get(from, len).await
         }).await??)
     }
 

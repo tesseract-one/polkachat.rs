@@ -109,7 +109,7 @@ impl Signer<subxt::PolkadotConfig> for TesseractSigner {
             &extrinsic_types,
         );
 
-        let result = executor::block_on(signed_future).unwrap();
+        let result = executor::block_on(signed_future).expect("signing failed");
         let bytes: &[u8] = result.as_ref();
         let signature: sr25519::Signature = bytes.try_into().unwrap();
         signature.into()

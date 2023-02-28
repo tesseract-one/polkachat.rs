@@ -12,12 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.Flow
+import one.tesseract.polkachat.Message
 
 @Composable
-fun Messages(messages: List<String>, modifier: Modifier = Modifier, scrollTrigger: Flow<Unit>? = null) {
+fun Messages(messages: List<Message>, modifier: Modifier = Modifier, scrollTrigger: Flow<Unit>? = null) {
     val scrollState = rememberLazyListState()
 
     LaunchedEffect(key1 = messages.size) {
@@ -45,13 +47,20 @@ fun Messages(messages: List<String>, modifier: Modifier = Modifier, scrollTrigge
                     .padding(bottom = 8.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    val progress =  when(it) {
+                        is Message.CommittedMessage -> false
+                        is Message.SubmittedMessage -> true
+                    }
+
                     Spacer(modifier = Modifier.requiredSize(8.dp)) //don't use align. CircularProgressIndicator is buggy with it
-                    CircularProgressIndicator(
-                        strokeWidth = 2.dp,
-                        modifier = Modifier.requiredSize(18.dp)
-                    )
+                    if(progress) {
+                        CircularProgressIndicator(
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.requiredSize(18.dp)
+                        )
+                    }
                     Text(
-                        text = "Message: $it",
+                        text = it.text,
                         textAlign = TextAlign.Left,
                         modifier = Modifier
                             .padding(all = 4.dp)

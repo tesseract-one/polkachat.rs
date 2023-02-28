@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use jni::{
     objects::{JObject, JClass, JString, JList},
-    JNIEnv
+    JNIEnv, sys::jint
 };
 use jni_fn::jni_fn;
 
@@ -44,6 +44,7 @@ pub fn create<'a>(env: JNIEnv<'a>, _core_class: JClass<'a>, application: JObject
         let loader = env.new_global_ref(loader)?;
         let runtime = Builder::new_multi_thread()
             .enable_all()
+            .worker_threads(16)
             .jvm(vm, Some(loader))
             .build()?;
 
@@ -72,13 +73,13 @@ pub fn account<'a>(env: JNIEnv<'a>, this: JObject<'a>) -> JObject<'a> {
 }
 
 #[jni_fn("one.tesseract.polkachat.rust.Core")]
-pub fn messages<'a>(env: JNIEnv<'a>, this: JObject<'a>) -> JObject<'a> {
+pub fn messages<'a>(env: JNIEnv<'a>, this: JObject<'a>, from: jint) -> JObject<'a> {
     use interop_android::iter::ExactSizeIteratorJava;
 
     deresultify(&env, || {
         let this = Core::from_java_ref(this, &env)?;
 
-        Ok(this.messages().map_ok_java(&env, |env, messages| {
+        Ok(this.messages(from as u32).map_ok_java(&env, |env, messages| {
             let messages = messages.into_iter().map(|message| {
                 env.new_string(&message).map_err(Error::from)
             });

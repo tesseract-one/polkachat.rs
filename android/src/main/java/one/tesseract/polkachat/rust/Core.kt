@@ -15,6 +15,6 @@ class Core(handle: Long): RustObject(handle) {
     }
 
     external fun account(): CompletableFuture<String>
-    external fun messages(): CompletableFuture<List<String>>
+    external fun messages(from: Int): CompletableFuture<List<String>>
     external fun send(message: String): CompletableFuture<Unit>
 }
