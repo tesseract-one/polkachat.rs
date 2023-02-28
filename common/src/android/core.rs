@@ -75,7 +75,7 @@ pub fn account<'a>(env: JNIEnv<'a>, this: JObject<'a>) -> JObject<'a> {
 
 #[jni_fn("one.tesseract.polkachat.rust.Core")]
 pub fn messages<'a>(env: JNIEnv<'a>, this: JObject<'a>) -> JObject<'a> {
-    use super::iter::ExactSizeIteratorJava;
+    use interop_android::iter::ExactSizeIteratorJava;
 
     deresultify(&env, || {
         let this = Core::from_java_ref(this, &env)?;
