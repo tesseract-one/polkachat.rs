@@ -6,9 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.future.asDeferred
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
@@ -22,23 +25,30 @@ class MainViewModel(private val core: Core) : ViewModel() {
     private val _account = mutableStateOf<String?>(null)
     val account: State<String?> = _account
 
-    private val _failure = MutableSharedFlow<String>(replay = 0)
-    val failure: SharedFlow<String> = _failure
+    private val _failure = Channel<String>()
+    val failure: Flow<String> = _failure.receiveAsFlow()
 
     init {
         val messagesState = _messages
         this.viewModelScope.launch {
             while (true) {
-                val messages = core.messages().await()
-                messagesState.clear()
-                messagesState.addAll(messages)
+                try {
+                    val messages = core.messages().await()
+                    messagesState.clear()
+                    messagesState.addAll(messages)
+                } catch (e: Exception) {
+                    val message = e.message ?: ""
+                    if (!message.contains("Cancelled Tesseract error")) {
+                        error(message)
+                    }
+                }
                 delay(5000L)
             }
         }
     }
 
     private suspend fun error(message: String) {
-        _failure.emit(message)
+        _failure.send(message)
     }
 
     fun login() {
