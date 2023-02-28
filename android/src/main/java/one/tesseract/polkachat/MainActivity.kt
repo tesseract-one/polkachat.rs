@@ -27,8 +27,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val core = Core.create(application, this.javaClass.classLoader!!)
+        val ui = UI()
+        val core = Core.create(application, ui, this.javaClass.classLoader!!)
         val vm = ViewModelProvider(this, MainViewModelFactory(core)).get(MainViewModel::class.java)
+        ui.model = vm
 
         setContent {
             PolkaChatTheme {

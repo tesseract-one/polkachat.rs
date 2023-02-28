@@ -2,6 +2,7 @@ package one.tesseract.polkachat.rust
 
 import android.app.Application
 import one.tesseract.interop.rust.RustObject
+import one.tesseract.polkachat.UI
 import java.util.concurrent.CompletableFuture
 
 class Core(handle: Long): RustObject(handle) {
@@ -11,7 +12,7 @@ class Core(handle: Long): RustObject(handle) {
         }
 
         @JvmStatic
-        external fun create(/*ui: UI, */application: Application, loader: ClassLoader): Core
+        external fun create(application: Application, ui: UI, loader: ClassLoader): Core
     }
 
     external fun account(): CompletableFuture<String>

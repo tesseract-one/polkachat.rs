@@ -1,5 +1,4 @@
-mod core;
-mod tokio;
 mod ui;
+mod jui;
 
 pub (crate) use ui::UI;

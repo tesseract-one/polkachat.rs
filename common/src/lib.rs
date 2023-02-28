@@ -16,8 +16,12 @@ mod delegate;
 mod error;
 mod substrate;
 mod contract;
+mod ui;
 
 pub (crate) use crate::error::Error;
 pub (crate) use crate::error::Result;
 
 pub (crate) use crate::core::Core;
+
+pub (crate) use crate::ui::UI;
+pub (crate) use crate::ui::UIProtocol;

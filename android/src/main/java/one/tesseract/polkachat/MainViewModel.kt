@@ -80,6 +80,12 @@ class MainViewModel(private val core: Core) : ViewModel() {
             }
         }
     }
+
+    fun presentError(message: String) {
+        viewModelScope.launch {
+            _failure.send(message)
+        }
+    }
 }
 
 class MainViewModelFactory(private val core: Core) : ViewModelProvider.Factory {

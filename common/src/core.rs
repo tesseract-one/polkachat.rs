@@ -15,7 +15,7 @@ use crate::{
     contract::Api,
     delegate::AppDelegate,
     substrate::{Account, Credentials, TesseractSigner},
-    Result, error::Error
+    Result, Error, UI
 };
 
 pub (crate) struct Core {
@@ -26,10 +26,10 @@ pub (crate) struct Core {
 }
 
 impl Core {
-    pub (crate) fn new<F: FnOnce(Tesseract<AppDelegate>)->Tesseract<AppDelegate>>(/*ui:UI, */runtime: Runtime, apply_transports: F) -> Self {
+    pub (crate) fn new<F: FnOnce(Tesseract<AppDelegate>)->Tesseract<AppDelegate>>(ui:UI, runtime: Runtime, apply_transports: F) -> Self {
         //let ui = Arc::new(ui);
 
-        let delegate = AppDelegate::new();
+        let delegate = AppDelegate::new(ui);
         let tesseract = Tesseract::new(Arc::new(delegate));
 
         let tesseract = apply_transports(tesseract);

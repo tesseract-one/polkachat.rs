@@ -15,7 +15,7 @@ use tesseract_ipc_android::client::TransportIPCAndroid;
 
 use crate::{
     error::Error,
-    Core
+    Core, UI
 };
 
 impl JavaDesc for Core {
@@ -28,7 +28,7 @@ impl JavaWrappableDesc for Core {
 }
 
 #[jni_fn("one.tesseract.polkachat.rust.Core")]
-pub fn create<'a>(env: JNIEnv<'a>, _core_class: JClass<'a>, application: JObject<'a>, loader: JObject<'a>/*, ui: JObject<'a>*/) -> JObject<'a> {
+pub fn create<'a>(env: JNIEnv<'a>, _core_class: JClass<'a>, application: JObject<'a>, ui: JObject<'a>, loader: JObject<'a>) -> JObject<'a> {
     use tokio::runtime::Builder;
     use super::tokio::AndroidBuilder;
 
@@ -48,10 +48,10 @@ pub fn create<'a>(env: JNIEnv<'a>, _core_class: JClass<'a>, application: JObject
             .jvm(vm, Some(loader))
             .build()?;
 
-        //let ui = UI::from_java(&env, ui)?;
+        let ui = UI::from_java(&env, ui)?;
         let ipc = TransportIPCAndroid::new(&env, application);
 
-        let core = Arc::new(Core::new(runtime, |tesseract| {
+        let core = Arc::new(Core::new(ui, runtime, |tesseract| {
             tesseract.transport(ipc)
         }));
 
