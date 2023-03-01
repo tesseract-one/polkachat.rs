@@ -1,3 +1,7 @@
+mod ui;
+
+pub (crate) use ui::UI;
+
 //need this for the sake of proper headers generation
 pub use tesseract_utils::*;
 pub use tesseract_client::*;
