@@ -9,17 +9,24 @@ import SwiftUI
 import CPolkaChat
 
 struct ContentView: View {
+    @State var account: String?
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-            Button(action: {
-                polkachat_app_test()
-            }, label: {
-                Text("Test")
-            })
+            Text("Polkadot Demo dApp")
+            Text("This dApp is a simple chat room made with smart contracts on the Polkadot network.")
+            
+            MessagesView(messages: ["one", "two", "three"])
+            
+            if let account = account {
+                UserControlsView(account: account) { message in
+                    print("Message to send: \(message)")
+                }
+            } else {
+                SignInView {
+                    account = "thisistheaccountmock"
+                }
+            }
         }
         .padding()
     }
