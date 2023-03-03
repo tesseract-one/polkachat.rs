@@ -8,20 +8,20 @@
 import SwiftUI
 
 struct MessagesView: View {
-    let messages: Array<String>
+    let messages: Array<Message>
     
     var body: some View {
         ScrollViewReader { scrollView in
             ScrollView {
                 LazyVStack(alignment: .leading) {
-                    ForEach(messages, id: \.self) { message in
+                    ForEach(messages) { message in
                         HStack {
-                            if message.contains("0") {
+                            if case .submitted(id: _, text: _) = message {
                                 ProgressView().padding(.trailing, 2)
                             }
-                            Text(message)
+                            Text(message.text)
                         }
-                        .id(message)
+                        .id(message.id)
                         .padding(6)
                         .padding(.horizontal, 4)
                         .background(Color(red: 0x8F/0xFF,
@@ -33,11 +33,11 @@ struct MessagesView: View {
                 }
                 .onChange(of: messages) { messages in
                     withAnimation(.easeInOut(duration: 60)) {
-                        scrollView.scrollTo(messages.last)
+                        scrollView.scrollTo(messages.last?.id)
                     }
                 }
                 .onAppear {
-                    scrollView.scrollTo(messages.last)
+                    scrollView.scrollTo(messages.last?.id)
                 }
             }
         }

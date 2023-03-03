@@ -9,11 +9,11 @@ import Foundation
 
 class ViewModel: ObservableObject {
     @Published var account: String?
-    @Published var messages: Array<String>
+    @Published var messages: Array<Message>
     
     init() {
         self.messages = Array(0...1000).map { num in
-            "message: \(num)"
+            Message.newCommited(text: "message: \(num)")
         }
     }
     
@@ -22,7 +22,7 @@ class ViewModel: ObservableObject {
     }
     
     func sendMessage(message: String) {
-        messages.append(message)
+        messages.append(Message.newSubmitted(text: message))
     }
     
     func prosentError(error: String) {
