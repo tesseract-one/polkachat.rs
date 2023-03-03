@@ -12,7 +12,7 @@ import CPolkaChat
 struct PolkaChatApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(model: ViewModel())
         }
     }
 }

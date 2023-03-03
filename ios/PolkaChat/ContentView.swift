@@ -9,35 +9,25 @@ import SwiftUI
 import CPolkaChat
 
 struct ContentView: View {
-    @State var account: String?
-    @State var messages: Array<String>
+    @StateObject private var model: ViewModel
     
-    init() {
-        self.messages = Array(0...1000).map { num in
-            "message: \(num)"
-        }
+    init(model: ViewModel) {
+        _model = StateObject(wrappedValue: model)
     }
     
     var body: some View {
         VStack(spacing: 0) {
             HeaderView()
             VStack {
-                MessagesView(messages: messages)
+                MessagesView(messages: model.messages)
                 
-                if let account = account {
-                    UserControlsView(account: account) { message in
-                        print("Message to send: \(message)")
-                    }
+                if let account = model.account {
+                    UserControlsView(account: account, sendMessage: model.sendMessage)
                     .padding()
                     .transition(.opacity.animation(.easeInOut) )
                 } else {
                     HStack {
-                        SignInView {
-                            //account = "thisistheaccountmock"
-                            let rand = Int.random(in: 1001...10000)
-                            messages.append("new message\(rand)")
-                        }
-                        
+                        SignInView(signIn: model.login)
                         Spacer()
                     }
                     .padding()
@@ -46,13 +36,12 @@ struct ContentView: View {
             }
             .padding(.horizontal)
             .padding(.bottom)
-            //.background(.red)
         }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(model: ViewModel())
     }
 }

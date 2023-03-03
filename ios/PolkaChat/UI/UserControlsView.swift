@@ -22,15 +22,17 @@ struct UserControlsView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Account ID: \(account))")
+            Text("Account ID: \(account)")
             HStack {
                 TextField("Message", text: $text)
                 
                 Button(action: {
+                    let text = text
+                    self.text = ""
                     sendMessage(text)
                 }) {
                     Image(systemName: "paperplane.fill").rotationEffect(.degrees(45))
-                }
+                }.disabled(text == "")
             }
         }
     }
