@@ -10,14 +10,19 @@ import CPolkaChat
 
 struct ContentView: View {
     @State var account: String?
+    @State var messages: Array<String>
+    
+    init() {
+        self.messages = Array(0...1000).map { num in
+            "message: \(num)"
+        }
+    }
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             HeaderView()
             VStack {
-                ScrollView {
-                    MessagesView(messages: ["one", "two", "three"])
-                }
+                MessagesView(messages: messages)
                 
                 if let account = account {
                     UserControlsView(account: account) { message in
@@ -36,7 +41,10 @@ struct ContentView: View {
                     .padding()
                     .transition(.opacity.animation(.easeInOut))
                 }
-            }.padding()
+            }
+            .padding(.horizontal)
+            .padding(.bottom)
+            //.background(.red)
         }
     }
 }
