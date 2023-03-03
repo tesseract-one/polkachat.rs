@@ -33,7 +33,9 @@ struct ContentView: View {
                 } else {
                     HStack {
                         SignInView {
-                            account = "thisistheaccountmock"
+                            //account = "thisistheaccountmock"
+                            let rand = Int.random(in: 1001...10000)
+                            messages.append("new message\(rand)")
                         }
                         
                         Spacer()

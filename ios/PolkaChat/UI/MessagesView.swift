@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct MessagesView: View {
-    @State private var messages: Array<String>
-    
-    init(messages: Array<String>) {
-        self.messages = messages
-    }
+    let messages: Array<String>
     
     var body: some View {
         ScrollViewReader { scrollView in
@@ -33,6 +29,11 @@ struct MessagesView: View {
                                           blue: 0xE3/0xFF))
                         .cornerRadius(32)
                         .padding(.vertical, 2)
+                    }
+                }
+                .onChange(of: messages) { messages in
+                    withAnimation(.easeInOut(duration: 60)) {
+                        scrollView.scrollTo(messages.last)
                     }
                 }
                 .onAppear {
