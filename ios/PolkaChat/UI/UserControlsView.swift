@@ -21,7 +21,7 @@ struct UserControlsView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Text("Account ID: \(account))")
             HStack {
                 TextField("Message", text: $text)

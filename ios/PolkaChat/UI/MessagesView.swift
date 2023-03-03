@@ -15,9 +15,10 @@ struct MessagesView: View {
     }
     
     var body: some View {
-        LazyVStack {
+        LazyVStack(alignment: .leading) {
             ForEach(messages, id: \.self) { message in
                 Text(message)
+                    .padding(.vertical, 2)
             }
         }
     }

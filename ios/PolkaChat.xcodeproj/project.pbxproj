@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		654DE71329B18C360065AA43 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654DE71229B18C360065AA43 /* HeaderView.swift */; };
 		659B4B4E299D788B0029E731 /* PolkaChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659B4B4D299D788B0029E731 /* PolkaChatApp.swift */; };
 		659B4B50299D788B0029E731 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659B4B4F299D788B0029E731 /* ContentView.swift */; };
 		659B4B52299D788C0029E731 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 659B4B51299D788C0029E731 /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		654DE71229B18C360065AA43 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		659B4B4A299D788B0029E731 /* PolkaChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PolkaChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		659B4B4D299D788B0029E731 /* PolkaChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolkaChatApp.swift; sourceTree = "<group>"; };
 		659B4B4F299D788B0029E731 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 				65DD5C9129B116AA00FB7CBD /* MessagesView.swift */,
 				65DD5C9329B1199200FB7CBD /* UserControlsView.swift */,
 				65DD5C9529B119A500FB7CBD /* SignInView.swift */,
+				654DE71229B18C360065AA43 /* HeaderView.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				659B4B50299D788B0029E731 /* ContentView.swift in Sources */,
+				654DE71329B18C360065AA43 /* HeaderView.swift in Sources */,
 				65DD5C9229B116AA00FB7CBD /* MessagesView.swift in Sources */,
 				659B4B4E299D788B0029E731 /* PolkaChatApp.swift in Sources */,
 				65DD5C9429B1199200FB7CBD /* UserControlsView.swift in Sources */,

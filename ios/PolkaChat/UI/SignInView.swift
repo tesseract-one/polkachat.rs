@@ -15,12 +15,13 @@ struct SignInView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Text("To start sending messages, please, sign in")
             
             Button(action: signIn) {
+                Image(systemName: "person.text.rectangle") //rectangle.and.pencil.and.ellipsis
                 Text("Sign-in with Tesseract")
-            }
+            }.padding(.top)
         }
     }
 }

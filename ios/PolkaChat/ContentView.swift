@@ -13,22 +13,31 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text("Polkadot Demo dApp")
-            Text("This dApp is a simple chat room made with smart contracts on the Polkadot network.")
-            
-            MessagesView(messages: ["one", "two", "three"])
-            
-            if let account = account {
-                UserControlsView(account: account) { message in
-                    print("Message to send: \(message)")
+            HeaderView()
+            VStack {
+                ScrollView {
+                    MessagesView(messages: ["one", "two", "three"])
                 }
-            } else {
-                SignInView {
-                    account = "thisistheaccountmock"
+                
+                if let account = account {
+                    UserControlsView(account: account) { message in
+                        print("Message to send: \(message)")
+                    }
+                    .padding()
+                    .transition(.opacity.animation(.easeInOut) )
+                } else {
+                    HStack {
+                        SignInView {
+                            account = "thisistheaccountmock"
+                        }
+                        
+                        Spacer()
+                    }
+                    .padding()
+                    .transition(.opacity.animation(.easeInOut))
                 }
-            }
+            }.padding()
         }
-        .padding()
     }
 }
 
