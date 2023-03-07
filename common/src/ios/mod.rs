@@ -1,4 +1,7 @@
 mod ui;
+mod core;
+mod logger;
+mod error;
 
 pub (crate) use ui::UI;
 

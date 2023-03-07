@@ -26,7 +26,10 @@ pub (crate) enum Error {
     Substrate(#[from] subxt::Error),
 
     #[error("Tokio Join Error: {0}")]
-    TokioJoin(#[from] JoinError)
+    TokioJoin(#[from] JoinError),
+
+    #[error("I/O Error: {0}")]
+    IO(#[from] std::io::Error)
 }
 
 pub (crate) type Result<T> = std::result::Result<T, Error>;

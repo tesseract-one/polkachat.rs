@@ -12,6 +12,9 @@
 		6513A16C29B2A1BD0064B343 /* Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6513A16B29B2A1BD0064B343 /* Core.swift */; };
 		6513A16E29B2A1F60064B343 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6513A16D29B2A1F60064B343 /* Message.swift */; };
 		654DE71329B18C360065AA43 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654DE71229B18C360065AA43 /* HeaderView.swift */; };
+		658AB89429B6D02600DDE09C /* ErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658AB89329B6D02600DDE09C /* ErrorModel.swift */; };
+		658AB89829B6D30800DDE09C /* SUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658AB89729B6D30800DDE09C /* SUI.swift */; };
+		658AB89A29B6D30F00DDE09C /* UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658AB89929B6D30F00DDE09C /* UI.swift */; };
 		659B4B4E299D788B0029E731 /* PolkaChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659B4B4D299D788B0029E731 /* PolkaChatApp.swift */; };
 		659B4B50299D788B0029E731 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659B4B4F299D788B0029E731 /* ContentView.swift */; };
 		659B4B52299D788C0029E731 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 659B4B51299D788C0029E731 /* Assets.xcassets */; };
@@ -29,6 +32,9 @@
 		6513A16B29B2A1BD0064B343 /* Core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core.swift; sourceTree = "<group>"; };
 		6513A16D29B2A1F60064B343 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		654DE71229B18C360065AA43 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
+		658AB89329B6D02600DDE09C /* ErrorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorModel.swift; sourceTree = "<group>"; };
+		658AB89729B6D30800DDE09C /* SUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SUI.swift; sourceTree = "<group>"; };
+		658AB89929B6D30F00DDE09C /* UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI.swift; sourceTree = "<group>"; };
 		659B4B4A299D788B0029E731 /* PolkaChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PolkaChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		659B4B4D299D788B0029E731 /* PolkaChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolkaChatApp.swift; sourceTree = "<group>"; };
 		659B4B4F299D788B0029E731 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -52,6 +58,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		658AB89529B6D04100DDE09C /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				658AB89329B6D02600DDE09C /* ErrorModel.swift */,
+				6513A16729B29E3C0064B343 /* ViewModel.swift */,
+				6513A16D29B2A1F60064B343 /* Message.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		658AB89629B6D08600DDE09C /* Rust */ = {
+			isa = PBXGroup;
+			children = (
+				6513A16929B2A18A0064B343 /* CoreProtocol.swift */,
+				6513A16B29B2A1BD0064B343 /* Core.swift */,
+				658AB89729B6D30800DDE09C /* SUI.swift */,
+				658AB89929B6D30F00DDE09C /* UI.swift */,
+			);
+			path = Rust;
+			sourceTree = "<group>";
+		};
 		659B4B41299D788B0029E731 = {
 			isa = PBXGroup;
 			children = (
@@ -72,12 +99,10 @@
 			isa = PBXGroup;
 			children = (
 				65DD5C9029B1169100FB7CBD /* UI */,
+				658AB89529B6D04100DDE09C /* Model */,
+				658AB89629B6D08600DDE09C /* Rust */,
 				659B4B4D299D788B0029E731 /* PolkaChatApp.swift */,
 				659B4B4F299D788B0029E731 /* ContentView.swift */,
-				6513A16729B29E3C0064B343 /* ViewModel.swift */,
-				6513A16D29B2A1F60064B343 /* Message.swift */,
-				6513A16929B2A18A0064B343 /* CoreProtocol.swift */,
-				6513A16B29B2A1BD0064B343 /* Core.swift */,
 				659B4B51299D788C0029E731 /* Assets.xcassets */,
 				659B4B53299D788C0029E731 /* Preview Content */,
 			);
@@ -212,7 +237,10 @@
 				65DD5C9429B1199200FB7CBD /* UserControlsView.swift in Sources */,
 				6513A16E29B2A1F60064B343 /* Message.swift in Sources */,
 				65DD5C9629B119A500FB7CBD /* SignInView.swift in Sources */,
+				658AB89A29B6D30F00DDE09C /* UI.swift in Sources */,
+				658AB89829B6D30800DDE09C /* SUI.swift in Sources */,
 				6513A16829B29E3C0064B343 /* ViewModel.swift in Sources */,
+				658AB89429B6D02600DDE09C /* ErrorModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

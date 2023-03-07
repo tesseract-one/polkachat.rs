@@ -1,8 +1,5 @@
-use async_trait::async_trait;
-
 use crate::error::Result;
 
-#[async_trait]
 pub (crate) trait UIProtocol {
     fn present_error(&self, message: &str) -> Result<()>;
 }

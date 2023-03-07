@@ -27,8 +27,6 @@ pub (crate) struct Core {
 
 impl Core {
     pub (crate) fn new<F: FnOnce(Tesseract<AppDelegate>)->Tesseract<AppDelegate>>(ui:UI, runtime: Runtime, apply_transports: F) -> Self {
-        //let ui = Arc::new(ui);
-
         let delegate = AppDelegate::new(ui);
         let tesseract = Tesseract::new(Arc::new(delegate));
 
