@@ -19,4 +19,9 @@ class ErrorModel: ObservableObject {
     func presentError(message: String) {
         self.error = Error(message: message)
     }
+    
+    @MainActor
+    func presentError(error: Swift.Error) {
+        presentError(message: "Error: \(error)")
+    }
 }

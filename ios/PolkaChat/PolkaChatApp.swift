@@ -17,7 +17,7 @@ struct PolkaChatApp: App {
         let errorModel = ErrorModel()
         let ui = UI(errorModel: errorModel)
         
-        self.model = ViewModel(core: try! Core(ui: ui))
+        self.model = ViewModel(core: try! Core(ui: ui), error: errorModel)
         self.error = errorModel
     }
     

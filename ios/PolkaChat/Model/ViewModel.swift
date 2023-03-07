@@ -9,12 +9,14 @@ import Foundation
 
 class ViewModel: ObservableObject {
     let core: Core
+    let error: ErrorModel
     
     @Published var account: String?
     @Published var messages: Array<Message>
     
-    init(core: Core) {
+    init(core: Core, error: ErrorModel) {
         self.core = core
+        self.error = error
         self.messages = []
         
         Task { @MainActor in
@@ -24,18 +26,17 @@ class ViewModel: ObservableObject {
                 }
                 self.messages.append(contentsOf: messages)
             } catch {
-                print("Error: \(error)")
+                await presentError(error: error)
             }
         }
     }
     
     func login() {
-        Task {
+        Task { @MainActor in
             do {
                 account = try await self.core.account()
             } catch {
-                //signed = "Error: \(error)"
-                print("Error: \(error)")
+                await presentError(error: error)
             }
         }
         
@@ -43,10 +44,25 @@ class ViewModel: ObservableObject {
     }
     
     func sendMessage(message: String) {
-        messages.append(Message.newSubmitted(text: message))
+        Task { @MainActor in
+            let text = message
+            let message = Message.newSubmitted(text: message)
+            
+            do {
+                messages.append(message)
+                try await core.send(message: text)
+                
+                let index = messages.lastIndex(of: message)!
+                messages[index] = message.intoCommited()
+            } catch {
+                messages.removeAll { $0 == message }
+                
+                await presentError(error: error)
+            }
+        }
     }
     
-    func prosentError(error: String) {
-        print("Error: \(error)")
+    func presentError(error: Swift.Error) async {
+        await self.error.presentError(error: error)
     }
 }
