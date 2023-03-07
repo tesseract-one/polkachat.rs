@@ -1,22 +1,28 @@
-use std::mem::ManuallyDrop;
-use std::sync::Arc;
-use std::u32;
+use std::{
+    mem::ManuallyDrop,
+    sync::Arc,
+    u32
+};
 
 use futures::FutureExt;
+
 use tesseract_client::transport;
-use tesseract_utils::array::CArray;
-use tesseract_utils::error::CError;
-use tesseract_utils::future::CFuture;
-use tesseract_utils::future_impls::CFutureString;
-use tesseract_utils::panic::handle_exception_result;
-use tesseract_utils::string::CString;
-use tesseract_utils::{ptr::{CAnyRustPtr, IntoAnyPtr}, string::CStringRef, traits::TryAsRef, response::CResponse};
 
-use crate::Core;
-use crate::Error;
+use tesseract_utils::{
+    Nothing,
+    array::CArray,
+    error::CError,
+    future::CFuture,
+    future_impls::{CFutureString, CFutureNothing},
+    panic::handle_exception_result,
+    string::CString,
+    response::CResponse,
+    ptr::{CAnyRustPtr, IntoAnyPtr}, 
+};
 
-use super::ui::UI;
-use super::ui::SUI;
+use crate::{Core, Error};
+
+use super::ui::{UI, SUI};
 
 pub type CCore = CAnyRustPtr;
 
@@ -70,6 +76,22 @@ pub unsafe extern "C" fn polkachat_ccore_messages(ccore: ManuallyDrop<CCore>, fr
         }).collect();
 
         Ok(messages.into())
+    }.map(|result| {
+        result.map_err(|e: Error| e.into())
+    }).into())
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn polkachat_ccore_send(ccore: ManuallyDrop<CCore>, message: CString) -> ManuallyDrop<CFutureNothing> {
+    let message = message.try_into();
+
+    ManuallyDrop::new(async move {
+        let message: String = message?;
+        let core = Arc::clone(ccore.as_ref::<Arc<Core>>()?);
+
+        let _ = core.send(message).await?;
+
+        Ok(Nothing::default())
     }.map(|result| {
         result.map_err(|e: Error| e.into())
     }).into())

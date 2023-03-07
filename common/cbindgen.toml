@@ -17,5 +17,5 @@ include = ["tesseract_utils", "tesseract_client"]
 [export]
 exclude = [
   "CFutureString", "SyncPtr_Void", "NativeTransport", "Void", 
-  "CError", "CString", "CStringRef", "CAnyDropPtr", "CAnyRustPtr", "Nothing"
+  "CError", "CString", "CStringRef", "CAnyDropPtr", "CAnyRustPtr", "Nothing", "CFuture_Nothing"
 ]

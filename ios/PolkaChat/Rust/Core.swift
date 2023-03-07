@@ -27,10 +27,15 @@ final class Core {
         try await polkachat_ccore_messages(self.internal, from).value.compactMap {$0}
     }
     
+    public func send(message: String) async throws {
+        try await polkachat_ccore_send(self.internal, message.copiedPtr()).value
+    }
+    
     deinit {
         polkachat_ccore_drop(&self.internal)
     }
 }
+
 
 //protocol CoreProtocol {
 //    func account()
