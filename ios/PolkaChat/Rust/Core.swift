@@ -23,6 +23,10 @@ final class Core {
         try await polkachat_ccore_account(self.internal).value
     }
     
+    public func messages(from: UInt32) async throws -> [String] {
+        try await polkachat_ccore_messages(self.internal, from).value.compactMap {$0}
+    }
+    
     deinit {
         polkachat_ccore_drop(&self.internal)
     }

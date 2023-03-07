@@ -15,8 +15,17 @@ class ViewModel: ObservableObject {
     
     init(core: Core) {
         self.core = core
-        self.messages = Array(0...1000).map { num in
-            Message.newCommited(text: "message: \(num)")
+        self.messages = []
+        
+        Task { @MainActor in
+            do {
+                let messages = try await core.messages(from: 0).map { message in
+                    Message.newCommited(text: message)
+                }
+                self.messages.append(contentsOf: messages)
+            } catch {
+                print("Error: \(error)")
+            }
         }
     }
     
