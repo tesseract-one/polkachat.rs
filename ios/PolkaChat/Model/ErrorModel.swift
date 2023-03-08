@@ -17,7 +17,9 @@ class ErrorModel: ObservableObject {
     
     @MainActor
     func presentError(message: String) {
-        self.error = Error(message: message)
+        if !message.contains("Cancelled Tesseract error") {
+            self.error = Error(message: message)
+        }
     }
     
     @MainActor

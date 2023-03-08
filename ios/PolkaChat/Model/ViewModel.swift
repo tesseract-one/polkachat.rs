@@ -57,7 +57,10 @@ class ViewModel: ObservableObject {
             } catch {
                 messages.removeAll { $0 == message }
                 
-                await presentError(error: error)
+                if !"\(error)".contains("panicked") {
+                    //otherwise it means we cancelled - handled like this because of subxt::Signer limitations
+                    await presentError(error: error)
+                }
             }
         }
     }
