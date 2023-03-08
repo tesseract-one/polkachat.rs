@@ -25,9 +25,9 @@ struct MessagesView: View {
                             .id(message.id)
                             .padding(6)
                             .padding(.horizontal, 4)
-                            .background(Color(red: 0x8F/0xFF,
-                                              green: 0xB8/0xFF,
-                                              blue: 0xE3/0xFF))
+                            .background(Color(red: 0x17/0xFF,
+                                              green: 0x61/0xFF,
+                                              blue: 0xB0/0xFF))
                             .cornerRadius(32)
                             .padding(.vertical, 2)
                         }
