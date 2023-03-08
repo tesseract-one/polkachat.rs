@@ -110,8 +110,8 @@
 				658AB89629B6D08600DDE09C /* Rust */,
 				659B4B4D299D788B0029E731 /* PolkaChatApp.swift */,
 				659B4B4F299D788B0029E731 /* ContentView.swift */,
-				659B4B51299D788C0029E731 /* Assets.xcassets */,
 				6592576729B808E400312C15 /* Info.plist */,
+				659B4B51299D788C0029E731 /* Assets.xcassets */,
 				659B4B53299D788C0029E731 /* Preview Content */,
 			);
 			path = PolkaChat;
