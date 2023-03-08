@@ -39,6 +39,7 @@
 		658AB89929B6D30F00DDE09C /* UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI.swift; sourceTree = "<group>"; };
 		6592576329B7D1BB00312C15 /* CArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CArray.swift; sourceTree = "<group>"; };
 		6592576529B7D1EB00312C15 /* CFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CFuture.swift; sourceTree = "<group>"; };
+		6592576729B808E400312C15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		659B4B4A299D788B0029E731 /* PolkaChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PolkaChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		659B4B4D299D788B0029E731 /* PolkaChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolkaChatApp.swift; sourceTree = "<group>"; };
 		659B4B4F299D788B0029E731 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -110,6 +111,7 @@
 				659B4B4D299D788B0029E731 /* PolkaChatApp.swift */,
 				659B4B4F299D788B0029E731 /* ContentView.swift */,
 				659B4B51299D788C0029E731 /* Assets.xcassets */,
+				6592576729B808E400312C15 /* Info.plist */,
 				659B4B53299D788C0029E731 /* Preview Content */,
 			);
 			path = PolkaChat;
@@ -379,6 +381,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"PolkaChat/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PolkaChat/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -407,6 +410,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"PolkaChat/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PolkaChat/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
