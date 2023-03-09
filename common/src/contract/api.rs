@@ -44,6 +44,23 @@ mod contract {
     pub const GAS_LIMIT: Weight = Weight::from_parts(9_375_000_000, 524288);
 }
 
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub(crate) struct Message {
+    pub id: u32,
+    pub sender: AccountId32,
+    pub text: String,
+}
+
+impl From<contract::Message<AccountId32>> for Message {
+    fn from(message: contract::Message<AccountId32>) -> Self {
+        Self {
+            id: message.id,
+            sender: message.sender,
+            text: message.text,
+        }
+    }
+}
+
 pub(crate) struct Api {
     client: OnlineClient<PolkadotConfig>,
     contract: AccountId32,
@@ -67,7 +84,7 @@ impl Api {
         self.client.metadata()
     }
 
-    pub(crate) async fn get(self: Arc<Self>, from: u32, to: u32) -> Result<Vec<String>, Error> {
+    pub(crate) async fn get(self: Arc<Self>, from: u32, to: u32) -> Result<Vec<Message>, Error> {
         let query = ContractCallQuery::<<PolkadotConfig as Config>::AccountId>::new_call(
             self.contract.clone(),
             self.contract.clone(),
@@ -94,7 +111,7 @@ impl Api {
         > = parse_query_result(response)?.0;
         let messages = result.map_err(|e| format!("{:?}", e))?;
         debug!("Messages {:?}", messages);
-        Ok(messages.into_iter().map(|m| m.text).collect())
+        Ok(messages.into_iter().map(Message::from).collect())
     }
 
     pub async fn len(&self) -> Result<u32, Error> {
@@ -119,7 +136,7 @@ impl Api {
         Ok(value.map_err(|e| format!("{:?}", e))?)
     }
 
-    pub async fn add<S>(&self, text: &str, signer: &S) -> Result<(), Error>
+    pub async fn add<S>(&self, text: &str, signer: &S) -> Result<Message, Error>
     where
         S: Signer<PolkadotConfig> + Send + Sync,
     {
@@ -132,7 +149,7 @@ impl Api {
         );
         call = call.add_parameter(text);
         let tx = call.tx();
-        let events = self
+        let contract::Events::MessageAdded(msg) = self
             .client
             .tx()
             .sign_and_submit_then_watch_default(&tx, signer)
@@ -142,7 +159,6 @@ impl Api {
             .find_first::<ContractEmittedEvent<<PolkadotConfig as Config>::AccountId>>()?
             .ok_or("ContractEmitted event not found")?
             .try_parse_event::<contract::Events<<PolkadotConfig as Config>::AccountId>>()?;
-        debug!("Events {:?}", events);
-        Ok(())
+        Ok(msg.into())
     }
 }
