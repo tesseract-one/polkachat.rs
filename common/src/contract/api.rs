@@ -16,12 +16,15 @@ mod contract {
     use super::Weight;
 
     #[derive(Decode, Debug)]
+    pub struct Message<AccountId: Decode> {
+        pub id: u32,
+        pub sender: AccountId,
+        pub text: String,
+    }
+
+    #[derive(Decode, Debug)]
     pub enum Events<AccountId: Decode> {
-        MessageAdded {
-            id: u32,
-            sender: AccountId,
-            text: String,
-        },
+        MessageAdded(Message<AccountId>),
     }
 
     pub mod calls {
@@ -86,12 +89,12 @@ impl Api {
             .await?;
 
         let result: Result<
-            Vec<(u32, <PolkadotConfig as Config>::AccountId, String)>,
+            Vec<contract::Message<<PolkadotConfig as Config>::AccountId>>,
             contract::LangError,
         > = parse_query_result(response)?.0;
         let messages = result.map_err(|e| format!("{:?}", e))?;
         debug!("Messages {:?}", messages);
-        Ok(messages.into_iter().map(|m| m.2).collect())
+        Ok(messages.into_iter().map(|m| m.text).collect())
     }
 
     pub async fn len(&self) -> Result<u32, Error> {
