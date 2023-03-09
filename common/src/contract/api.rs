@@ -14,14 +14,14 @@ use super::call::*;
 mod contract {
     use super::Decode;
     use super::Weight;
-    use subxt::events::StaticEvent;
 
-    #[derive(Decode)]
-    pub struct AddEvent {}
-
-    impl StaticEvent for AddEvent {
-        const PALLET: &'static str = "Contracts";
-        const EVENT: &'static str = "Called";
+    #[derive(Decode, Debug)]
+    pub enum Events<AccountId: Decode> {
+        MessageAdded {
+            id: u32,
+            sender: AccountId,
+            text: String,
+        },
     }
 
     pub mod calls {
@@ -48,7 +48,7 @@ pub(crate) struct Api {
 
 //if you need to publish on mainnet, please, just wrap with features
 const API_URL: &str = "wss://rococo-contracts-rpc.polkadot.io:443";
-const SMART_CONTRACT: &str = "5GQu322xPcZSLdAPewy8BP9qHeir8Y9cLogbDaiRNuJzCeFD";
+const SMART_CONTRACT: &str = "5G41HtZ2z56PtLr44KVC6rpGsENzRLn5mYgaGjkhkz1iFocX";
 
 impl Api {
     pub(crate) async fn new() -> Result<Self, Error> {
@@ -85,8 +85,13 @@ impl Api {
             .request::<Bytes>("state_call", params)
             .await?;
 
-        let value: Result<Vec<String>, contract::LangError> = parse_query_result(response)?.0;
-        Ok(value.map_err(|e| format!("{:?}", e))?)
+        let result: Result<
+            Vec<(u32, <PolkadotConfig as Config>::AccountId, String)>,
+            contract::LangError,
+        > = parse_query_result(response)?.0;
+        let messages = result.map_err(|e| format!("{:?}", e))?;
+        debug!("Messages {:?}", messages);
+        Ok(messages.into_iter().map(|m| m.2).collect())
     }
 
     pub async fn len(&self) -> Result<u32, Error> {
@@ -124,14 +129,17 @@ impl Api {
         );
         call = call.add_parameter(text);
         let tx = call.tx();
-        self.client
+        let events = self
+            .client
             .tx()
             .sign_and_submit_then_watch_default(&tx, signer)
             .await?
             .wait_for_finalized_success()
             .await?
-            .find_first::<contract::AddEvent>()?
-            .ok_or("No event")?;
+            .find_first::<ContractEmittedEvent<<PolkadotConfig as Config>::AccountId>>()?
+            .ok_or("ContractEmitted event not found")?
+            .try_parse_event::<contract::Events<<PolkadotConfig as Config>::AccountId>>()?;
+        debug!("Events {:?}", events);
         Ok(())
     }
 }

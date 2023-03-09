@@ -1,15 +1,32 @@
-
 use pallet_contracts_primitives::ContractExecResult;
 use sp_weights::Weight;
 use subxt::{
+    events::StaticEvent,
     ext::{
         codec::{Compact, Decode, Encode},
         sp_core::{bytes::from_hex, Bytes},
         sp_runtime::scale_info::TypeInfo,
     },
     tx::{StaticTxPayload, TxPayload},
-    Error
+    Error,
 };
+
+#[derive(Decode, Clone, Debug)]
+pub struct ContractEmittedEvent<AccountId: Decode> {
+    pub contract: AccountId,
+    pub data: Vec<u8>,
+}
+
+impl<T: Decode> StaticEvent for ContractEmittedEvent<T> {
+    const PALLET: &'static str = "Contracts";
+    const EVENT: &'static str = "ContractEmitted";
+}
+
+impl<T: Decode> ContractEmittedEvent<T> {
+    pub fn try_parse_event<E: Decode>(&self) -> Result<E, Error> {
+        Ok(E::decode(&mut self.data.as_ref())?)
+    }
+}
 
 pub trait StaticCall {
     /// Pallet name.
@@ -117,9 +134,7 @@ impl<AccountId: Encode> ContractCallQuery<AccountId> {
     }
 }
 
-pub fn parse_query_result<T: Decode>(
-    data: Bytes,
-) -> Result<(T, Weight), Error> {
+pub fn parse_query_result<T: Decode>(data: Bytes) -> Result<(T, Weight), Error> {
     let result = ContractExecResult::<u128>::decode(&mut data.as_ref())?;
     let res_data = result.result.map_err(|err| format!("{:?}", err))?.data;
     Ok((T::decode(&mut res_data.as_ref())?, result.gas_required))
