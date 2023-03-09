@@ -18,9 +18,12 @@ struct MessagesView: View {
                         ForEach(messages) { message in
                             HStack {
                                 if case .submitted(id: _, text: _) = message {
-                                    ProgressView().padding(.trailing, 2)
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+                                        .padding(.trailing, 2)
                                 }
                                 Text(message.text)
+                                    .foregroundColor(Color.white)
                             }
                             .id(message.id)
                             .padding(6)
