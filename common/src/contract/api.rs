@@ -68,7 +68,7 @@ pub(crate) struct Api {
 
 //if you need to publish on mainnet, please, just wrap with features
 const API_URL: &str = "wss://rococo-contracts-rpc.polkadot.io:443";
-const SMART_CONTRACT: &str = "5G41HtZ2z56PtLr44KVC6rpGsENzRLn5mYgaGjkhkz1iFocX";
+const SMART_CONTRACT: &str = "5GZRb5XZVCTsH6VSxT3e8tE3qQmaiq4hJhxgdoFg8iijP3S9";
 
 impl Api {
     pub(crate) async fn new() -> Result<Self, Error> {
