@@ -3,5 +3,6 @@
 [workspace]
 
 members = [
-    "common"
+    "common",
+    "contract"
 ]
