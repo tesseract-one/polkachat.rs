@@ -32,9 +32,9 @@ struct MessagesView: View {
                                               green: 0x61/0xFF,
                                               blue: 0xB0/0xFF))
                             .cornerRadius(32)
-                            .padding(.vertical, 2)
                         }
                     }
+                    .padding(.top, 8)
                     .onChange(of: messages) { messages in
                         withAnimation(.easeInOut(duration: 60)) {
                             scrollView.scrollTo(messages.last?.id)
