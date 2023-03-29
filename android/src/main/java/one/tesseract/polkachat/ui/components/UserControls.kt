@@ -26,11 +26,14 @@ fun UserControls(account: String, send: (String) -> Unit) {
                 message.value = it
             })
             Spacer(modifier = Modifier.width(16.dp))
-            Button(onClick = {
-                val msg = message.value
-                message.value = ""
-                send(msg)
-            }) {
+            Button(
+                enabled = message.value.trim().isNotEmpty(),
+                onClick = {
+                    val msg = message.value
+                    message.value = ""
+                    send(msg)
+                }
+            ) {
                 Text(
                     text = "Send",
                     maxLines = 1,
