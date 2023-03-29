@@ -66,6 +66,7 @@ fun Messages(messages: List<Message>, modifier: Modifier = Modifier, scrollTrigg
                             .padding(all = 4.dp)
                             .padding(horizontal = 4.dp)
                     )
+                    Spacer(modifier = Modifier.requiredSize(8.dp))
                 }
             }
         }
