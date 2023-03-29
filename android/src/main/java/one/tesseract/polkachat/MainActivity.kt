@@ -1,14 +1,13 @@
 package one.tesseract.polkachat
 
+import android.content.res.Resources.Theme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -52,56 +51,67 @@ class MainActivity : ComponentActivity() {
                             .padding(padding)
                             .fillMaxSize(),
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(all = 24.dp)
-                        ) {
-                            val scrollTrigger = remember {
-                                MutableSharedFlow<Unit>()
-                            }
-
-                            var userControlsShown by remember {
-                                mutableStateOf(false)
-                            }
-
-                            LaunchedEffect(key1 = userControlsShown) {
-                                scrollTrigger.emit(Unit)
-                            }
-
-                            Text(
-                                text = "Polkadot Demo dApp",
-                                fontSize = 24.sp,
-                                modifier = Modifier.padding(bottom = 24.dp)
-                            )
-
-                            Text(
-                                text = "This dApp is a simple chat room made with smart contracts on the Polkadot network.",
-                                modifier = Modifier.padding(bottom = 24.dp)
-                            )
-
-                            Messages(
-                                messages = vm.messages,
-                                scrollTrigger = scrollTrigger,
+                        Column {
+                            Box(
                                 modifier = Modifier
-                                    .weight(1f)
+                                    .background(color = MaterialTheme.colors.primaryVariant)
+                                    .padding(all = 24.dp)) {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        text = "Tesseract",
+                                        fontSize = 48.sp,
+                                        modifier = Modifier.padding(bottom = 16.dp)
+                                    )
+                                    Text(
+                                        text = "Polkadot Demo dApp",
+                                        fontSize = 32.sp,
+                                        modifier = Modifier.padding(bottom = 16.dp)
+                                    )
+                                    Text(
+                                        text = "This dApp is a simple chat room made with smart contracts on the Polkadot network to demonstrate the Tesseract dApp/Wallet integration.",
+                                    )
+                                }
+                            }
+                            Column(
+                                modifier = Modifier
                                     .fillMaxSize()
-                            )
+                                    .padding(all = 24.dp)
+                            ) {
+                                val scrollTrigger = remember {
+                                    MutableSharedFlow<Unit>()
+                                }
 
-                            Box(modifier = Modifier.padding(vertical = 8.dp)) {
-                                AnimatedContent(targetState = vm.account.value) { account ->
-                                    if (account != null) {
-                                        if (this.transition.currentState == this.transition.targetState) {
-                                            userControlsShown = true
+                                var userControlsShown by remember {
+                                    mutableStateOf(false)
+                                }
+
+                                LaunchedEffect(key1 = userControlsShown) {
+                                    scrollTrigger.emit(Unit)
+                                }
+
+                                Messages(
+                                    messages = vm.messages,
+                                    scrollTrigger = scrollTrigger,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxSize()
+                                )
+
+                                Box(modifier = Modifier.padding(vertical = 8.dp)) {
+                                    AnimatedContent(targetState = vm.account.value) { account ->
+                                        if (account != null) {
+                                            if (this.transition.currentState == this.transition.targetState) {
+                                                userControlsShown = true
+                                            }
+
+                                            UserControls(account = account, send = vm::sendMessage)
+                                        } else {
+                                            if (this.transition.currentState == this.transition.targetState) {
+                                                userControlsShown = false
+                                            }
+
+                                            SignIn(vm::login)
                                         }
-
-                                        UserControls(account = account, send = vm::sendMessage)
-                                    } else {
-                                        if (this.transition.currentState == this.transition.targetState) {
-                                            userControlsShown = false
-                                        }
-
-                                        SignIn(vm::login)
                                     }
                                 }
                             }
