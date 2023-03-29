@@ -75,7 +75,8 @@ class MainActivity : ComponentActivity() {
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(all = 24.dp)
+                                    .padding(horizontal = 24.dp)
+                                    .padding(bottom = 24.dp)
                             ) {
                                 val scrollTrigger = remember {
                                     MutableSharedFlow<Unit>()

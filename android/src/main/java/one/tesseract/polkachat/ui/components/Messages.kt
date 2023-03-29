@@ -44,7 +44,7 @@ fun Messages(messages: List<Message>, modifier: Modifier = Modifier, scrollTrigg
                 elevation = 10.dp,
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
-                    .padding(bottom = 8.dp)
+                    .padding(top = 8.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     val progress =  when(it) {
