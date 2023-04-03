@@ -12,6 +12,10 @@
     <img src=".github/ios-wallet-requested.png" alt="Wallet requested on iOS" width="30%"/>
 </p>
 
+## Demo
+
+The demo is a chat, storing messages in a [Rococo](https://polkadot.network/blog/tag/rococo/) network smart contract. It shows how the dApps can perform readonly operations without ever connecting to the wallet and how to aquire public key and sign transactions using [Tesseract dApp/Wallet integration protocol](https://github.com/tesseract-one/). In the case of this demo, the transaction is created and submitted when the user wishes to send a message to the chat.
+
 ## Prerequisites
 
 ### Common prerequisites
