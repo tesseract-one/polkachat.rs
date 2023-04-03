@@ -4,7 +4,7 @@
 	</a>
 </p>
 
-### **Polkadot Chat demo dApp** is a demonstration of how [Tesseract](https://github.com/tesseract-one/) provides wallet integration for dApps on mobile.designed to help you test your dApp integration with Wallets
+### **Polkadot Chat demo dApp** is a demonstration of how [Tesseract](https://github.com/tesseract-one/) provides wallet integration for dApps on mobile
 
 <p align="center">
     <img src=".github/polkachat.png" alt="Polkadot chat dApp" width="30%"/>
