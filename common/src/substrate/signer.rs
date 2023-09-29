@@ -22,20 +22,14 @@ use tesseract::client::Service;
 use tesseract_protocol_substrate::{AccountType, GetAccountResponse, Substrate, SubstrateService};
 
 use subxt::{
-    ext::{
-        codec::Encode,
-        frame_metadata::v14::ExtrinsicMetadata,
-        scale_value::scale::PortableRegistry,
-        sp_core::sr25519,
-        sp_runtime::{
-            scale_info::form::PortableForm,
-            traits::IdentifyAccount,
-            AccountId32, MultiSigner
-        },
-    },
+    ext::frame_metadata::v14::{ExtrinsicMetadata, SignedExtensionMetadata},
     tx::Signer,
+    utils::AccountId32,
     Metadata
 };
+use parity_scale_codec::Encode;
+use scale_info::{form::PortableForm, PortableRegistry};
+use subxt_signer::sr25519;
 
 pub struct TesseractSigner {
     tesseract: Arc<dyn Service<Protocol = Substrate>>,
@@ -50,42 +44,42 @@ impl TesseractSigner {
         account: &GetAccountResponse,
         metadata: Metadata,
     ) -> crate::Result<Self> {
-        let pk: sr25519::Public = account.public_key.as_slice().try_into().map_err(|_| { //error is () here anyway
-            crate::Error::PublicKey
-        })?;
-        let public: MultiSigner = pk.into();
-        let account_id = public.clone().into_account();
+        let public = sr25519::PublicKey(
+            account.public_key.clone().try_into().map_err(|_| crate::Error::PublicKey)?
+        );
         Ok(Self {
             tesseract: tesseract,
-            account: account_id,
+            account: public.to_account_id(),
             path: account.path.clone(),
             metadata,
         })
     }
 
-    fn get_medatada_info(
-        &self,
-        extrinsic_data: &[u8],
-    ) -> Result<(ExtrinsicMetadata<PortableForm>, PortableRegistry), subxt::error::Error> {
-        let pallet_idx = extrinsic_data[0];
-        let pallet = self
-            .metadata
-            .runtime_metadata()
-            .pallets
-            .iter()
-            .find(|p| p.index == pallet_idx)
-            .ok_or("Pallet not found!")?;
-        let call_ty_id = pallet.calls.as_ref().ok_or("Pallet doesn't have calls")?.ty;
-        let mut meta = self.metadata.runtime_metadata().extrinsic.clone();
-        meta.ty = call_ty_id.into();
-        Ok((meta, self.metadata.types().clone()))
+    fn get_medatada_info(&self) -> (ExtrinsicMetadata<PortableForm>, PortableRegistry) {
+        let ext_meta = self.metadata.extrinsic();
+
+        let extensions = ext_meta.signed_extensions().iter().map(|ext| {
+            SignedExtensionMetadata {
+                identifier: ext.identifier().into(),
+                ty: ext.extra_ty().into(),
+                additional_signed: ext.additional_ty().into()
+            }
+        }).collect();
+
+        let meta = ExtrinsicMetadata {
+            ty: ext_meta.call_ty().into(),
+            version: ext_meta.version(),
+            signed_extensions: extensions
+         };
+
+         (meta, self.metadata.types().clone())
     }
 }
 
 impl Signer<subxt::PolkadotConfig> for TesseractSigner {
     /// Return the "from" account ID.
-    fn account_id(&self) -> &<subxt::PolkadotConfig as subxt::Config>::AccountId {
-        &self.account
+    fn account_id(&self) -> <subxt::PolkadotConfig as subxt::Config>::AccountId {
+        self.account.clone()
     }
 
     /// Return the "from" address.
@@ -98,7 +92,7 @@ impl Signer<subxt::PolkadotConfig> for TesseractSigner {
     /// Some signers may fail, for instance because the hardware on which the keys are located has
     /// refused the operation.
     fn sign(&self, signer_payload: &[u8]) -> <subxt::PolkadotConfig as subxt::Config>::Signature {
-        let (meta, registry) = self.get_medatada_info(signer_payload).unwrap();
+        let (meta, registry) = self.get_medatada_info();
         let extrinsic_metadata = meta.encode();
         let extrinsic_types = registry.encode();
         let signed_future = Arc::clone(&self.tesseract).sign_transaction(
@@ -111,7 +105,7 @@ impl Signer<subxt::PolkadotConfig> for TesseractSigner {
 
         let result = executor::block_on(signed_future).expect("signing failed");
         let bytes: &[u8] = result.as_ref();
-        let signature: sr25519::Signature = bytes.try_into().unwrap();
+        let signature = sr25519::Signature(bytes.try_into().unwrap());
         signature.into()
     }
 }

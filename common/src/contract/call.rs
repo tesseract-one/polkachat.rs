@@ -1,28 +1,26 @@
-use pallet_contracts_primitives::ContractExecResult;
-use sp_weights::Weight;
+use scale_decode::{DecodeAsType, DecodeAsFields};
+use scale_encode::EncodeAsType;
 use subxt::{
-    events::StaticEvent,
-    ext::{
-        codec::{Compact, Decode, Encode},
-        sp_core::{bytes::from_hex, Bytes},
-        sp_runtime::scale_info::TypeInfo,
-    },
-    tx::{StaticTxPayload, TxPayload},
-    Error,
+    events::StaticEvent, 
+    ext::codec::{Compact, Encode, Decode},
+    tx::TxPayload, tx::Payload,
+    Error, Metadata
 };
 
-#[derive(Decode, Clone, Debug)]
-pub struct ContractEmittedEvent<AccountId: Decode> {
+use super::primitives::{ContractExecResult, Weight, DecodeWithMetadata};
+
+#[derive(DecodeAsType, Clone, Debug)]
+pub struct ContractEmittedEvent<AccountId: DecodeAsType> {
     pub contract: AccountId,
     pub data: Vec<u8>,
 }
 
-impl<T: Decode> StaticEvent for ContractEmittedEvent<T> {
+impl<T: DecodeAsType> StaticEvent for ContractEmittedEvent<T> where Self: DecodeAsFields {
     const PALLET: &'static str = "Contracts";
     const EVENT: &'static str = "ContractEmitted";
 }
 
-impl<T: Decode> ContractEmittedEvent<T> {
+impl<T: DecodeAsType> ContractEmittedEvent<T> {
     pub fn try_parse_event<E: Decode>(&self) -> Result<E, Error> {
         Ok(E::decode(&mut self.data.as_ref())?)
     }
@@ -35,30 +33,30 @@ pub trait StaticCall {
     const CALL: &'static str;
 }
 
-#[derive(Encode, Clone, TypeInfo)]
-pub struct ContractCallCall<Address: Encode + TypeInfo> {
+#[derive(EncodeAsType, Clone)]
+pub struct ContractCallCall<Address: EncodeAsType> {
     dest: Address,
     #[codec(compact)]
     value: u128,
     gas_limit: Weight,
     storage_deposit_limit: Option<Compact<u128>>,
-    input_data: Vec<u8>,
+    data: Vec<u8>,
 }
 
-impl<Address: Encode + TypeInfo> ContractCallCall<Address> {
+impl<Address: EncodeAsType> ContractCallCall<Address> {
     pub fn new(
         id: Address,
         value: u128,
         gas_limit: Weight,
         storage_deposit_limit: Option<u128>,
-        input_data: Vec<u8>,
+        data: Vec<u8>,
     ) -> Self {
         Self {
             dest: id,
             value,
             gas_limit,
             storage_deposit_limit: storage_deposit_limit.map(|v| v.into()),
-            input_data,
+            data,
         }
     }
 
@@ -67,28 +65,28 @@ impl<Address: Encode + TypeInfo> ContractCallCall<Address> {
         value: u128,
         gas_limit: Weight,
         storage_deposit_limit: Option<u128>,
-        method: &str,
+        method: [u8; 4],
     ) -> Self {
         Self::new(
             id,
             value,
             gas_limit,
             storage_deposit_limit,
-            from_hex(method).unwrap(),
+            method.into(),
         )
     }
 
     pub fn add_parameter<P: Encode>(mut self, param: P) -> Self {
-        param.encode_to(&mut self.input_data);
+        param.encode_to(&mut self.data);
         self
     }
 
     pub fn tx(self) -> impl TxPayload {
-        return StaticTxPayload::<Self>::new(Self::PALLET, Self::CALL, self, [0; 32]).unvalidated();
+        Payload::<Self>::new(Self::PALLET, Self::CALL, self)
     }
 }
 
-impl<T: Encode + TypeInfo> StaticCall for ContractCallCall<T> {
+impl<T: EncodeAsType> StaticCall for ContractCallCall<T> {
     /// Pallet name.
     const PALLET: &'static str = "Contracts";
     /// Call name.
@@ -112,7 +110,7 @@ impl<AccountId: Encode> ContractCallQuery<AccountId> {
         value: u128,
         gas_limit: Option<Weight>,
         storage_deposit_limit: Option<u128>,
-        method: &str,
+        method: [u8; 4],
     ) -> Self {
         Self {
             origin: from,
@@ -120,7 +118,7 @@ impl<AccountId: Encode> ContractCallQuery<AccountId> {
             value,
             gas_limit,
             storage_deposit_limit,
-            input_data: from_hex(method).unwrap(),
+            input_data: method.into(),
         }
     }
 
@@ -129,13 +127,14 @@ impl<AccountId: Encode> ContractCallQuery<AccountId> {
         self
     }
 
-    pub fn as_param(&self) -> Bytes {
-        self.encode().into()
+    pub fn as_param(&self) -> Vec<u8> {
+        self.encode()
     }
 }
 
-pub fn parse_query_result<T: Decode>(data: Bytes) -> Result<(T, Weight), Error> {
-    let result = ContractExecResult::<u128>::decode(&mut data.as_ref())?;
-    let res_data = result.result.map_err(|err| format!("{:?}", err))?.data;
+pub fn parse_query_result<T: Decode>(data: Vec<u8>, meta: &Metadata) -> Result<(T, Weight), Error> {
+    let result = ContractExecResult::<u128>::decode_with_metadata(&mut data.as_ref(), meta)?;
+    let rresult: Result<_, _> = result.result.into();
+    let res_data = rresult?.data;
     Ok((T::decode(&mut res_data.as_ref())?, result.gas_required))
 }

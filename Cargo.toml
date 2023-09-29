@@ -2,7 +2,4 @@
 
 [workspace]
 
-members = [
-    "common",
-    "contract"
-]
+members = ["common"]

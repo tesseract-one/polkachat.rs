@@ -1,13 +1,13 @@
 use std::str::FromStr;
 use std::sync::Arc;
 
-use sp_weights::Weight;
 use subxt::{
-    ext::codec::Decode, ext::sp_core::Bytes, ext::sp_runtime::AccountId32, rpc_params, tx::Signer,
-    Config, Error, Metadata, OnlineClient, PolkadotConfig,
+    ext::codec::Decode, utils::AccountId32, tx::Signer,
+    Config, Error, OnlineClient, Metadata, PolkadotConfig
 };
 
 use crate::substrate::OnlineClientWebPKI;
+use super::primitives::Weight;
 
 use super::call::*;
 
@@ -28,9 +28,9 @@ mod contract {
     }
 
     pub mod calls {
-        pub const ADD: &'static str = "0x4b050ea9";
-        pub const GET: &'static str = "0x2f865bd9";
-        pub const LEN: &'static str = "0x839b3548";
+        pub const ADD: [u8; 4] = [0x4b, 0x05, 0x0e, 0xa9];
+        pub const GET: [u8; 4] = [0x2f, 0x86, 0x5b, 0xd9];
+        pub const LEN: [u8; 4] = [0x83, 0x9b, 0x35, 0x48];
     }
 
     // Can be imported form ink_primitives but added here to reduce dependencies
@@ -75,7 +75,8 @@ impl Api {
         debug!("Creating Substrate client - start");
         let client = OnlineClient::<PolkadotConfig>::from_url_web_pki(API_URL).await?;
         debug!("Created client successfully");
-        let contract = AccountId32::from_str(SMART_CONTRACT)?;
+        let contract = AccountId32::from_str(SMART_CONTRACT)
+            .map_err(|err| Error::Other(err.to_string()))?;
         debug!("Created contract ID");
         Ok(Self { client, contract })
     }
@@ -96,19 +97,17 @@ impl Api {
         .add_parameter(from)
         .add_parameter(to);
 
-        let at: Option<<PolkadotConfig as Config>::Hash> = None;
-        let params = rpc_params!["ContractsApi_call", query.as_param(), at];
-
+        let hash = self.client.backend().latest_finalized_block_ref().await?;
         let response = self
             .client
-            .rpc()
-            .request::<Bytes>("state_call", params)
+            .backend()
+            .call("ContractsApi_call", Some(&query.as_param()), hash.hash())
             .await?;
 
         let result: Result<
             Vec<contract::Message<<PolkadotConfig as Config>::AccountId>>,
             contract::LangError,
-        > = parse_query_result(response)?.0;
+        > = parse_query_result(response, &self.client.metadata())?.0;
         let messages = result.map_err(|e| format!("{:?}", e))?;
         debug!("Messages {:?}", messages);
         Ok(messages.into_iter().map(Message::from).collect())
@@ -123,16 +122,17 @@ impl Api {
             None,
             contract::calls::LEN,
         );
-        let at: Option<<PolkadotConfig as Config>::Hash> = None;
-        let params = rpc_params!["ContractsApi_call", query.as_param(), at];
+
+        let hash = self.client.backend().latest_finalized_block_ref().await?;
 
         let response = self
             .client
-            .rpc()
-            .request::<Bytes>("state_call", params)
+            .backend()
+            .call("ContractsApi_call", Some(&query.as_param()), hash.hash())
             .await?;
-
-        let value: Result<u32, contract::LangError> = parse_query_result(response)?.0;
+        
+        let value: Result<u32, contract::LangError> 
+            = parse_query_result(response, &self.client.metadata())?.0;
         Ok(value.map_err(|e| format!("{:?}", e))?)
     }
 

@@ -11,20 +11,19 @@ edition = "2021"
 async-trait = "0.1"
 futures = "0.3.26"
 
-thiserror = "1.0.31"
+thiserror = "1.0.49"
 log = "0.4.17"
 
 tokio = {version="1.25.0", features=["rt-multi-thread"]}
 
-http = "0.2.8"
-jsonrpsee-core = "0.16.2"
-jsonrpsee-client-transport = "0.16.2"
-
-subxt = "0.25.0"
-scale-info = {version="2.0.0", default-features = false}
-sp-weights = {version="4.0.0", default-features = false}
-parity-scale-codec = "3.0.0"
-pallet-contracts-primitives = {version="7.0.0", default-features = false}
+subxt = "0.32"
+subxt-signer = {version = "0.32", features = ["subxt"]}
+scale-info = "*"
+scale-encode = "*"
+scale-decode = "*"
+parity-scale-codec = "*"
+jsonrpsee-core = "*"
+jsonrpsee-client-transport = {version = "*", features = ["webpki-tls"] }
 
 #tesseract = { path = "../../Tesseract.rs/tesseract", features = ["service"] }
 #tesseract-protocol-test = { path = "../../Tesseract.rs/protocols/test", features = ["service"] }
@@ -49,7 +48,7 @@ tesseract_client = { git = "https://github.com/tesseract-one/Tesseract.swift", b
 
 [build-dependencies]
 build-target = "0.4.0"
-cbindgen = "0.24"
+cbindgen = "0.26"
 
 [lib]
 crate_type = ["cdylib", "staticlib"]

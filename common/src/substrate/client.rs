@@ -1,12 +1,9 @@
-use std::sync::Arc;
-
 use async_trait::async_trait;
 
-use http::Uri;
-use jsonrpsee_core::client::{CertificateStore, ClientBuilder};
-use jsonrpsee_client_transport::ws::WsTransportClientBuilder;
+use jsonrpsee_core::client::ClientBuilder;
+use jsonrpsee_client_transport::ws::{Url, WsTransportClientBuilder};
 use subxt::{
-    error::RpcError,
+    error::RpcError, backend::rpc::RpcClient,
     Config, Error, OnlineClient
 };
 
@@ -23,12 +20,12 @@ impl<T: Config> OnlineClientWebPKI for OnlineClient<T> {
 
     async fn from_url_web_pki(url: &str) -> Result<OnlineClient<Self::Conf>, Error> {
         debug!("Creating WebPKI Susbtrate OnlineClient");
-        let url: Uri = url
+        let url: Url = url
             .parse()
             .map_err(|e| RpcError::ClientError(Box::new(e)))?;
         debug!("\tUri created");
         let (sender, receiver) = WsTransportClientBuilder::default()
-            .certificate_store(CertificateStore::WebPki)
+            .use_webpki_rustls()
             .build(url)
             .await
             .inspect_err(|e| {
@@ -39,9 +36,9 @@ impl<T: Config> OnlineClientWebPKI for OnlineClient<T> {
             })?;
         debug!("\tBuilder created");
         let client = ClientBuilder::default()
-            .max_notifs_per_subscription(4096)
+            .max_buffer_capacity_per_subscription(4096)
             .build_with_tokio(sender, receiver);
         debug!("\tClient created");
-        OnlineClient::from_rpc_client(Arc::new(client)).await
+        OnlineClient::from_rpc_client(RpcClient::new(client)).await
     }
 }

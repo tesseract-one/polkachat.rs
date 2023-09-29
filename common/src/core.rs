@@ -52,20 +52,10 @@ impl Core {
     }
 
     pub(crate) async fn account_string(self: Arc<Self>) -> Result<String> {
-        use subxt::ext::sp_core::{crypto::Ss58Codec, sr25519::Public};
-
-        let pk: Public = self
-            .account()
-            .await?
-            .public_key
-            .as_slice()
-            .try_into()
-            .map_err(|_| {
-                // _ is () - so we don't have any info on why
-                Error::PublicKey
-            })?;
-
-        Ok(pk.to_ss58check())
+        use subxt_signer::sr25519::PublicKey;
+        let raw_pk = self.account().await?.public_key;
+        let pk = PublicKey(raw_pk.try_into().map_err(|_| Error::PublicKey)?);
+        Ok(pk.to_account_id().to_string())
     }
 
     pub(crate) async fn messages(self: Arc<Self>, from: u32) -> Result<Vec<String>> {
