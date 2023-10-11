@@ -2,7 +2,7 @@ use async_trait::async_trait;
 
 use jni::{JNIEnv, objects::JObject, errors::Result as JResult};
 
-use interop_android::ContextedGlobal;
+use crabdroid::ContextedGlobal;
 
 use crate::ui::UIProtocol;
 use crate::error::Result as PCResult;
@@ -24,7 +24,7 @@ impl UI {
 #[async_trait]
 impl UIProtocol for UI {
     fn present_error(&self, message: &str) -> PCResult<()> {
-        Ok(self.internal.do_in_context_rret(64, |env, ui| {
+        Ok(self.internal.with_safe_context_rret(64, |env, ui| {
             let message = env.new_string(message)?;
             let jui = JUI::from_env(&env, ui);
 

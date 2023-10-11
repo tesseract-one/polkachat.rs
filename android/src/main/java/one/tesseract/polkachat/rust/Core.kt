@@ -1,7 +1,7 @@
 package one.tesseract.polkachat.rust
 
 import android.app.Application
-import one.tesseract.interop.rust.RustObject
+import one.tesseract.crabdroid.RustObject
 import one.tesseract.polkachat.UI
 import java.util.concurrent.CompletableFuture
 

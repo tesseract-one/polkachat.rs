@@ -12,7 +12,10 @@ async-trait = "0.1"
 futures = "0.3.26"
 
 thiserror = "1.0.49"
-log = "0.4.17"
+
+#logger
+log = "0.3.9"
+log-panics = { version = "1.2", features = ["with-backtrace"]}
 
 tokio = {version="1.25.0", features=["rt-multi-thread"]}
 
@@ -25,20 +28,20 @@ parity-scale-codec = "*"
 jsonrpsee-core = "*"
 jsonrpsee-client-transport = {version = "*", features = ["webpki-tls"] }
 
-#tesseract = { path = "../../Tesseract.rs/tesseract", features = ["service"] }
-#tesseract-protocol-test = { path = "../../Tesseract.rs/protocols/test", features = ["service"] }
-tesseract = {git = "https://github.com/tesseract-one/Tesseract.rs", branch="master", features=["client"]}
-tesseract-protocol-substrate = {git = "https://github.com/tesseract-one/Tesseract.rs", branch="master", features=["client"]}
+tesseract = { path = "../../Tesseract.rs/tesseract", features = ["client"] }
+tesseract-protocol-substrate = { path = "../../Tesseract.rs/protocols/substrate", features = ["client"] }
+#tesseract = {git = "https://github.com/tesseract-one/Tesseract.rs", branch="master", features=["client"]}
+#tesseract-protocol-substrate = {git = "https://github.com/tesseract-one/Tesseract.rs", branch="master", features=["client"]}
 
 [target.'cfg(target_os = "android")'.dependencies]
 jni = "0.20.0"
 jni_fn = "0.1.0"
 
-android_logger = "0.13.0"
-log-panics = "2.1.0"
+#android_logger = "0.13.0"
+android_log = "0.1.3"
 
-interop_android = { path = "../../Tesseract.android/rust/interop" }
-tesseract_ipc_android = { path = "../../Tesseract.android/rust/ipc", features = ["client"] }
+crabdroid = { path = "../../Tesseract.android/rust/crabdroid" }
+tesseract-android = { path = "../../Tesseract.android/rust/sdk", features=["client"]}
 
 [target.'cfg(target_os = "ios")'.dependencies]
 stderrlog = "0.5.4"

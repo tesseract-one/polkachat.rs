@@ -6,16 +6,15 @@ use jni::{
 };
 use jni_fn::jni_fn;
 
-use interop_android::{
-    future::{FutureExtJava, IntoJava},
-    JavaDesc, JavaWrappableDesc, JavaWrappable, deresultify
+use crabdroid::{
+    future::JCompletionStage,
+    JavaDesc, JavaWrappableDesc, JavaWrappable, JavaErrorContext
 };
 
-use tesseract_ipc_android::client::TransportIPCAndroid;
+use tesseract_android::client::transport::IPCTransport;
 
 use crate::{
-    error::Error,
-    Core, UI
+    Error, Core, UI
 };
 
 impl JavaDesc for Core {
@@ -32,12 +31,13 @@ pub fn create<'a>(env: JNIEnv<'a>, _core_class: JClass<'a>, application: JObject
     use tokio::runtime::Builder;
     use super::tokio::AndroidBuilder;
 
-    deresultify(&env, || {
-        android_logger::init_once(
-            android_logger::Config::default()
-                .with_max_level(log::LevelFilter::Trace)
-                .with_tag("PolkaChat"),
-        );
+    Error::java_context(&env, || {
+        // android_logger::init_once(
+        //     android_logger::Config::default()
+        //         //.with_max_level(log::::Trace)
+        //         .with_tag("PolkaChat").with_max_level(level),
+        // );
+        android_log::init("PolkaChat")?;
         log_panics::init();
 
         let vm = env.get_java_vm()?;
@@ -46,10 +46,10 @@ pub fn create<'a>(env: JNIEnv<'a>, _core_class: JClass<'a>, application: JObject
             .enable_all()
             .worker_threads(16)
             .jvm(vm, Some(loader))
-            .build()?;
+            .build().map_err(Error::from)?;
 
         let ui = UI::from_java(&env, ui)?;
-        let ipc = TransportIPCAndroid::new(&env, application);
+        let ipc = IPCTransport::new(&env, application);
 
         let core = Arc::new(Core::new(ui, runtime, |tesseract| {
             tesseract.transport(ipc)
@@ -60,47 +60,58 @@ pub fn create<'a>(env: JNIEnv<'a>, _core_class: JClass<'a>, application: JObject
 }
 
 #[jni_fn("one.tesseract.polkachat.rust.Core")]
-pub fn account<'a>(env: JNIEnv<'a>, this: JObject<'a>) -> JObject<'a> {
-    deresultify(&env, || {
+pub fn account<'a>(env: JNIEnv<'a>, this: JObject<'a>) -> JObject<'a> { //CompletableFuture<String>
+    Error::java_context(&env, || {
         let this = Core::from_java_ref(this, &env)?;
 
-        let account = this.account_string().map_ok_java(&env, |env, account| {
-            Ok(env.new_string(&account)?.into())
-        }).boxed_into_java(&env);
+        JCompletionStage::launch_async(&env, async move |vm| {
+            let account = this.account_string().await?;
 
-        Ok(account)
+            let env = vm.get_env()?;
+
+            let account = env.new_string(&account)?;
+
+            Ok(env.new_global_ref(account)?)
+        })
     })
 }
 
 #[jni_fn("one.tesseract.polkachat.rust.Core")]
-pub fn messages<'a>(env: JNIEnv<'a>, this: JObject<'a>, from: jint) -> JObject<'a> {
-    use interop_android::iter::ExactSizeIteratorJava;
+pub fn messages<'a>(env: JNIEnv<'a>, this: JObject<'a>, from: jint) -> JObject<'a> { //CompletableFuture<List<String>>
+    use crabdroid::iter::ExactSizeIteratorJava;
 
-    deresultify(&env, || {
+    Error::java_context(&env, || {
         let this = Core::from_java_ref(this, &env)?;
 
-        Ok(this.messages(from as u32).map_ok_java(&env, |env, messages| {
+        JCompletionStage::launch_async(&env, async move |vm| {
+            let messages = this.messages(from as u32).await?;
+
+            let env = vm.get_env()?;
+
             let messages = messages.into_iter().map(|message| {
-                env.new_string(&message).map_err(Error::from)
+                env.new_string(&message)
             });
 
             let class = env.find_class("java/lang/String")?;
 
             let list: JList = messages.try_collect_java(&env, class)?;
 
-            Ok(list.into())
-        }).boxed_into_java(&env))
+            Ok(env.new_global_ref(list)?)
+        })
     })
 }
 
 #[jni_fn("one.tesseract.polkachat.rust.Core")]
-pub fn send<'a>(env: JNIEnv<'a>, this: JObject<'a>, message: JString<'a>) -> JObject<'a> {
-    deresultify(&env, || {
+pub fn send<'a>(env: JNIEnv<'a>, this: JObject<'a>, message: JString<'a>) -> JObject<'a> { //CompletableFuture<Unit>
+    crate::Error::java_context(&env, || {
         let this = Core::from_java_ref(this, &env)?;
         let message = env.get_string(message)?.into();
 
-        Ok(this.send(message).map_ok_java(&env, |_, _| {
-            Ok(JObject::null())
-        }).boxed_into_java(&env))
+        JCompletionStage::launch_async(&env, async move |vm| {
+            this.send(message).await?;
+
+            let env = vm.get_env()?;
+            Ok(env.new_global_ref(JObject::null())?)
+        })
     })
 }

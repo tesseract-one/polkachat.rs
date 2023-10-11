@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.future.asDeferred
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
+import one.tesseract.exception.UserCancelledException
 import one.tesseract.polkachat.rust.Core
 
 //TODO: double check that errors are caught everywhere
@@ -53,8 +54,8 @@ class MainViewModel(private val core: Core) : ViewModel() {
             try {
                 _account.value = core.account().asDeferred().await()
             } catch (e: Exception) {
-                val message = e.message ?: ""
-                if (!message.contains("Cancelled Tesseract error")) {
+                if (e !is UserCancelledException) {
+                    val message = e.message ?: ""
                     error(message)
                 }
             }

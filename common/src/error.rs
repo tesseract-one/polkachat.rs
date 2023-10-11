@@ -5,8 +5,8 @@ use tokio::task::JoinError;
 #[derive(Error, Debug)]
 pub (crate) enum Error {
     #[cfg(target_os = "android")]
-    #[error("JNI error")]
-    JNI(#[from] jni::errors::Error),
+    #[error("Android error")]
+    Android(#[from] tesseract_android::error::TesseractAndroidError),
 
     #[cfg(target_os = "ios")]
     #[error("Logger initialization error")]
@@ -15,9 +15,6 @@ pub (crate) enum Error {
     #[cfg(target_os = "ios")]
     #[error("C error")]
     CError(#[from] tesseract_utils::error::CError),
-
-    #[error("Tesseract error: {0}")]
-    Tesseract(#[from] tesseract::Error),
 
     #[error("Invalid public key")]
     PublicKey,
@@ -33,3 +30,20 @@ pub (crate) enum Error {
 }
 
 pub (crate) type Result<T> = std::result::Result<T, Error>;
+
+impl Into<tesseract::Error> for Error {
+    fn into(self) -> tesseract::Error {
+        match self {
+            #[cfg(target_os = "android")]
+            Error::Android(e) => e.into(),
+            Error::IO(e) => {
+                let description = format!("IOError: {}", e);
+                tesseract::Error::described(tesseract::ErrorKind::Weird, &description)
+            },
+            e => {
+                let description = format!("Wallet error: {}", e);
+                tesseract::Error::described(tesseract::ErrorKind::Weird, &description)
+            }
+        }
+    }
+}

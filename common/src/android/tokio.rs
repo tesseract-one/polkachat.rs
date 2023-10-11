@@ -3,7 +3,7 @@ use tokio::runtime::Builder;
 use jni::objects::GlobalRef;
 use jni::{JNIEnv, JavaVM};
 
-use interop_android::env::AndroidEnv;
+use crabdroid::env::AndroidEnv;
 
 pub trait AndroidBuilder {
     fn jvm(&mut self, vm: JavaVM, class_loader: Option<GlobalRef>) -> &mut Self;
