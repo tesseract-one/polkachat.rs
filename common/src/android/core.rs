@@ -32,13 +32,20 @@ pub fn create<'a>(env: JNIEnv<'a>, _core_class: JClass<'a>, application: JObject
     use super::tokio::AndroidBuilder;
 
     Error::java_context(&env, || {
-        // android_logger::init_once(
-        //     android_logger::Config::default()
-        //         //.with_max_level(log::::Trace)
-        //         .with_tag("PolkaChat").with_max_level(level),
-        // );
-        android_log::init("PolkaChat")?;
-        log_panics::init();
+        let log_level = if cfg!(debug_assertions) {
+            log::LevelFilter::Debug
+        } else {
+            log::LevelFilter::Error
+        };
+        android_logger::init_once(
+            android_logger::Config::default()
+                .with_max_level(log_level)
+                .with_tag("PolkaChat"),
+        );
+        
+        log_panics::Config::new()
+            .backtrace_mode(log_panics::BacktraceMode::Resolved)
+            .install_panic_hook();
 
         let vm = env.get_java_vm()?;
         let loader = env.new_global_ref(loader)?;

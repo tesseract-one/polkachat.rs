@@ -14,9 +14,11 @@ buildscript {
         compileSdkVersion = 34
         minSdkVersion = 24
         targetSdkVersion = 34
-        composeVersion = '1.4.3'
         ndkVersion = ndkVersionProp == null ? DEFAULT_NDK_VERSION : ndkVersionProp
         rustNdkTargets = targetsProp == null ? DEFAULT_NDK_TARGETS : targetsProp
+
+        composeVersion = '1.4.3'
+        tesseractVersion = '0.5.4'
     }
 }
 
