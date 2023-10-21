@@ -15,12 +15,13 @@ dependencyResolutionManagement {
 
 includeBuild('../Tesseract.android') {
     dependencySubstitution {
-        substitute module('one.tesseract.android:crabdroid') using project(':java:crabdroid')
-        substitute module('one.tesseract.android:tesseract-base') using project(':java:tesseract-base')
-        substitute module('one.tesseract.android:tesseract-ipc') using project(':java:tesseract-ipc')
-        substitute module('one.tesseract.android:tesseract-ipc-client') using project(':java:tesseract-ipc-client')
+        substitute module('one.tesseract:crabdroid') using project(':java:crabdroid')
+        substitute module('one.tesseract:detached-activity') using project(':java:detached-activity')
+        substitute module('one.tesseract:base') using project(':java:base')
+        substitute module('one.tesseract:client-transport-ipc') using project(':java:client-transport-ipc')
     }
 }
 
 rootProject.name = "Polkadot SmartContract Demo Chat"
 include ':android'
+project(":android").name = "polkachat"
