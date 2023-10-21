@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import TesseractClient
+import TesseractTransportsClient
 
 import CPolkaChat
 
@@ -15,7 +15,7 @@ final class Core {
     
     public init(ui: UI) throws {
         self.internal = try CResult<CCore>.wrap { value, error in
-            polkachat_ccore_create(ui.asRust(), IPCTransportIOS().asNative(), value, error)
+            polkachat_ccore_create(ui.asRust(), IPCTransportIOS().toCore(), value, error)
         }.get()
     }
     

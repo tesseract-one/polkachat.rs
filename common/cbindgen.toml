@@ -5,17 +5,17 @@ language = "C"
 documentation_style = "C"
 pragma_once = true
 cpp_compat = true
-after_includes = "@import CTesseractUtils;\n@import CTesseractClient;"
+after_includes = "@import CTesseract;"
 
 [enum]
 prefix_with_name = true
 
 [parse]
 parse_deps = true
-include = ["tesseract_utils", "tesseract_client"]
+include = ["tesseract-swift-utils", "tesseract-swift-transports"]
 
 [export]
 exclude = [
-  "CFutureString", "SyncPtr_Void", "NativeTransport", "Void", 
+  "CFutureString", "SyncPtr_Void", "ClientTransport", "Void", "COptionResponseResult",
   "CError", "CString", "CStringRef", "CAnyDropPtr", "CAnyRustPtr", "Nothing", "CFuture_Nothing"
 ]

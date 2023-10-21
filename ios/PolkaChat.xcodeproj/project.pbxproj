@@ -21,11 +21,10 @@
 		659B4B50299D788B0029E731 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659B4B4F299D788B0029E731 /* ContentView.swift */; };
 		659B4B52299D788C0029E731 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 659B4B51299D788C0029E731 /* Assets.xcassets */; };
 		659B4B55299D788C0029E731 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 659B4B54299D788C0029E731 /* Preview Assets.xcassets */; };
-		659B4B5D299D79950029E731 /* TesseractClient in Frameworks */ = {isa = PBXBuildFile; productRef = 659B4B5C299D79950029E731 /* TesseractClient */; };
-		659B4B5F299D79950029E731 /* TesseractUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 659B4B5E299D79950029E731 /* TesseractUtils */; };
 		65DD5C9229B116AA00FB7CBD /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DD5C9129B116AA00FB7CBD /* MessagesView.swift */; };
 		65DD5C9429B1199200FB7CBD /* UserControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DD5C9329B1199200FB7CBD /* UserControlsView.swift */; };
 		65DD5C9629B119A500FB7CBD /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DD5C9529B119A500FB7CBD /* SignInView.swift */; };
+		92D79B282AE3421700D22BDC /* TesseractTransportsClient in Frameworks */ = {isa = PBXBuildFile; productRef = 92D79B272AE3421700D22BDC /* TesseractTransportsClient */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,8 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				659B4B5D299D79950029E731 /* TesseractClient in Frameworks */,
-				659B4B5F299D79950029E731 /* TesseractUtils in Frameworks */,
+				92D79B282AE3421700D22BDC /* TesseractTransportsClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +89,7 @@
 			children = (
 				659B4B4C299D788B0029E731 /* PolkaChat */,
 				659B4B4B299D788B0029E731 /* Products */,
+				92D79B262AE3421700D22BDC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -136,6 +135,13 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
+		92D79B262AE3421700D22BDC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -154,8 +160,7 @@
 			);
 			name = PolkaChat;
 			packageProductDependencies = (
-				659B4B5C299D79950029E731 /* TesseractClient */,
-				659B4B5E299D79950029E731 /* TesseractUtils */,
+				92D79B272AE3421700D22BDC /* TesseractTransportsClient */,
 			);
 			productName = PolkaChat;
 			productReference = 659B4B4A299D788B0029E731 /* PolkaChat.app */;
@@ -457,22 +462,17 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tesseract-one/Tesseract.swift.git";
 			requirement = {
-				branch = master;
+				branch = "swift-wallet";
 				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		659B4B5C299D79950029E731 /* TesseractClient */ = {
+		92D79B272AE3421700D22BDC /* TesseractTransportsClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 659B4B5B299D79950029E731 /* XCRemoteSwiftPackageReference "Tesseract.swift" */;
-			productName = TesseractClient;
-		};
-		659B4B5E299D79950029E731 /* TesseractUtils */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 659B4B5B299D79950029E731 /* XCRemoteSwiftPackageReference "Tesseract.swift" */;
-			productName = TesseractUtils;
+			productName = TesseractTransportsClient;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

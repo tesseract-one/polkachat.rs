@@ -7,8 +7,7 @@
 
 import Foundation
 
-import TesseractUtils
-
+import TesseractTransportsClient
 import CPolkaChat
 
 extension SUI: CSwiftDropPtr {
@@ -22,26 +21,23 @@ extension SUI {
     }
 }
 
-private func fn_present_error(this: UnsafePointer<SUI>?, message: CStringRef?) -> CResult_Nothing {
-    guard let this = try? this?.unowned() else {
-        var result = CResult_Nothing()
-        result.tag = CResult_Nothing_Err_Nothing
-        result.err = CError.nullPtr.copiedPtr()
-        return result
+private func fn_present_error(
+    this: UnsafePointer<SUI>?, message: CStringRef?, error: UnsafeMutablePointer<CTesseract.CError>!
+) -> Bool {
+    guard let this = this else {
+        error.pointee = InteropError.null(SUI.self).copiedPtr()
+        return false
     }
-    
-    guard let message = message?.copied() else {
-        var result = CResult_Nothing()
-        result.tag = CResult_Nothing_Err_Nothing
-        result.err = CError.nullPtr.copiedPtr()
-        return result
+    guard let message = message else {
+        error.pointee = InteropError.null(CStringRef.self).copiedPtr()
+        return false
     }
-    
-    defer {
-        this.presentError(message: message)
+    switch this.unowned() {
+    case .failure(let err):
+        error.pointee = err.copiedPtr()
+        return false
+    case .success(let this):
+        defer { this.presentError(message: message.copied()) }
+        return true
     }
-    
-    var result = CResult_Nothing()
-    result.tag = CResult_Nothing_Ok_Nothing
-    return result
 }

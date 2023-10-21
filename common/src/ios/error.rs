@@ -1,27 +1,46 @@
-use tesseract_utils::error::CError::ErrorCode;
+use tesseract_swift_transports::error::TesseractSwiftError;
+use tesseract_swift_utils::error::CError;
 
 use crate::error::Error;
 
 #[repr(u32)]
-enum DAErrorCodes {
-    LoggerInit = 0x1000,
-    Tesseract,
+enum AppErrorCode {
     PublicKey,
     Substrate,
     TokioJoin,
     IO
 }
 
-impl Into<tesseract_utils::error::CError> for crate::error::Error  {
-    fn into(self) -> tesseract_utils::error::CError {
-        match self {
-            Error::CError(cerror) => cerror,
-            Error::LoggerInit(logger_error) => ErrorCode(DAErrorCodes::LoggerInit as u32, logger_error.to_string().into()),
-            Error::Tesseract(error) => ErrorCode(DAErrorCodes::Tesseract as u32, error.to_string().into()),
-            Error::PublicKey => ErrorCode(DAErrorCodes::PublicKey as u32, Error::PublicKey.to_string().into()),
-            Error::Substrate(error) => ErrorCode(DAErrorCodes::Substrate as u32, error.to_string().into()),
-            Error::TokioJoin(error) => ErrorCode(DAErrorCodes::TokioJoin as u32, error.to_string().into()),
-            Error::IO(error) => ErrorCode(DAErrorCodes::IO as u32, error.to_string().into()),
+impl From<Error> for TesseractSwiftError {
+    fn from(value: Error) -> Self {
+        match value {
+            Error::IOS(err) => err,
+            Error::LoggerInit(err) => Self::Logger(err.to_string()),
+            Error::IO(err) => Self::Custom(AppErrorCode::IO as u32, err.to_string()),
+            Error::PublicKey => Self::Custom(AppErrorCode::PublicKey as u32, Error::PublicKey.to_string()),
+            Error::Substrate(err) => Self::Custom(AppErrorCode::Substrate as u32, err.to_string()),
+            Error::TokioJoin(err) => Self::Custom(AppErrorCode::TokioJoin as u32, err.to_string())
         }
+    }
+}
+
+impl From<Error> for CError {
+    fn from(value: Error) -> Self {
+        let tesseract: TesseractSwiftError = value.into();
+        tesseract.into()
+    }
+}
+
+impl From<CError> for Error {
+    fn from(value: CError) -> Self {
+        let tesseract: TesseractSwiftError = value.into();
+        tesseract.into()
+    }
+}
+
+impl From<tesseract::Error> for Error {
+    fn from(value: tesseract::Error) -> Self {
+        let tesseract: TesseractSwiftError = value.into();
+        tesseract.into()
     }
 }

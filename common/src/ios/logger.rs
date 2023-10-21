@@ -1,12 +1,12 @@
 pub (super) fn init() -> crate::Result<()> {
-    use stderrlog::LogLevelNum;
+    use log::LogLevel;
 
     let level = if cfg!(debug_assertions) {
-        LogLevelNum::Debug
+        LogLevel::Debug
         //LogLevelNum::Trace
     } else {
-        LogLevelNum::Error
+        LogLevel::Error
     };
 
-    Ok(stderrlog::new().verbosity(level).show_module_names(true).init()?)
+    Ok(stderrlog::new().verbosity(level as usize).module("Polkachat").init()?)
 }

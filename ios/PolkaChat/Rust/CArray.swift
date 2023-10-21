@@ -11,14 +11,14 @@ import TesseractUtils
 import CPolkaChat
 
 extension CArray_CString: CCopyConvertArrayPtr {
-    public static func convert(element: CString?) -> String? {
-        element?.copied()
+    public static func convert(element: CString) -> String {
+        element.copied()
     }
 
     public mutating func _free() {
         polkachat_carray_cstring_drop(&self)
     }
 
-    public typealias CElement = CString?
-    public typealias SElement = String?
+    public typealias CElement = CString
+    public typealias SElement = String
 }
