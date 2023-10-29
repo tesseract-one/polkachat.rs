@@ -80,6 +80,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
 
+    implementation 'one.tesseract:crabdroid:0.2.0'
+
     implementation "one.tesseract:base:$tesseractVersion"
     implementation "one.tesseract:client-transport-ipc:$tesseractVersion"
 
