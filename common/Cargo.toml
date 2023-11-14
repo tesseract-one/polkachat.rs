@@ -19,14 +19,17 @@ log-panics = { version = "2", features = ["with-backtrace"] }
 
 tokio = {version="1.25.0", features=["rt-multi-thread"]}
 
+# substrate libraries
 subxt = "0.32.1"
 subxt-signer = {version = "0.32.1", features = ["subxt"]}
+# check proper libraries versions in the subxt workspace Cargo.toml
 scale-info = "2.9.0"
 scale-encode = "0.5.0"
 scale-decode = "0.9.0"
 parity-scale-codec = "3.4.0"
 jsonrpsee-core = "0.20"
 jsonrpsee-client-transport = {version = "0.20", features = ["webpki-tls"] }
+# end of substrate libraries
 
 tesseract = { path = "../../Tesseract.rs/tesseract", features = ["client"] }
 tesseract-protocol-substrate = { path = "../../Tesseract.rs/protocols/substrate", features = ["client"] }
