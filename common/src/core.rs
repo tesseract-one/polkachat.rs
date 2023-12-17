@@ -23,7 +23,7 @@ pub(crate) struct Core {
 }
 
 impl Core {
-    pub(crate) fn new<F: FnOnce(Tesseract<AppDelegate>) -> Tesseract<AppDelegate>>(
+    pub(crate) fn new<F: FnOnce(Tesseract) -> Tesseract>(
         ui: UI,
         runtime: Runtime,
         apply_transports: F,

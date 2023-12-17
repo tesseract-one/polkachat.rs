@@ -56,7 +56,7 @@ pub fn create<'a>(env: JNIEnv<'a>, _core_class: JClass<'a>, application: JObject
             .build().map_err(Error::from)?;
 
         let ui = UI::from_java(&env, ui)?;
-        let ipc = IPCTransport::new(&env, application);
+        let ipc = IPCTransport::new(&env, application)?;
 
         let core = Arc::new(Core::new(ui, runtime, |tesseract| {
             tesseract.transport(ipc)
