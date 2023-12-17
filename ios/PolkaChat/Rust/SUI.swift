@@ -22,7 +22,7 @@ extension SUI {
 }
 
 private func fn_present_error(
-    this: UnsafePointer<SUI>?, message: CStringRef?, error: UnsafeMutablePointer<CTesseract.CError>!
+    this: UnsafePointer<SUI>?, message: CStringRef?, error: UnsafeMutablePointer<CTesseractShared.CError>!
 ) -> Bool {
     guard let this = this else {
         error.pointee = InteropError.null(SUI.self).copiedPtr()

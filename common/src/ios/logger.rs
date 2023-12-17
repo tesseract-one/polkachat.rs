@@ -9,7 +9,6 @@ pub (super) fn init() -> crate::Result<()> {
 
     stderrlog::new()
         .verbosity(level)
-        .module("PolkaChat")
         .show_module_names(true)
         .init()?;
 
