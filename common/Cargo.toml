@@ -31,10 +31,8 @@ jsonrpsee-core = "0.20"
 jsonrpsee-client-transport = {version = "0.20", features = ["webpki-tls"] }
 # end of substrate libraries
 
-#tesseract = { path = "../../Tesseract.rs/tesseract", features = ["client"] }
-#tesseract-protocol-substrate = { path = "../../Tesseract.rs/protocols/substrate", features = ["client"] }
-tesseract = {git = "https://github.com/tesseract-one/Tesseract.rs", branch="master", features=["client"]}
-tesseract-protocol-substrate = {git = "https://github.com/tesseract-one/Tesseract.rs", branch="master", features=["client"]}
+tesseract-one = { version = "0.5", features = ["client"] }
+tesseract-protocol-substrate = { version = "0.5", features = ["client"] }
 
 [target.'cfg(target_os = "android")'.dependencies]
 #logger
@@ -43,15 +41,15 @@ android_logger = "0.13"
 #android interop
 jni = "0.20"
 jni_fn = "0.1"
-crabdroid = { path = "../../Tesseract.android/rust/crabdroid" }
+crabdroid = "0.3"
 
-tesseract-android = { path = "../../Tesseract.android/rust/sdk", features=["client"]}
+tesseract-android = { version = "0.5", features = ["client"] }
 
 [target.'cfg(target_os = "ios")'.dependencies]
 stderrlog = "0.5"
 
-tesseract-swift-utils = { path = "../../Tesseract.swift/Rust/utils" }
-tesseract-swift-transports = { path = "../../Tesseract.swift/Rust/transports", features = ["client"]}
+#tesseract-swift-utils = { path = "../../Tesseract.swift/Rust/utils" }
+#tesseract-swift-transports = { path = "../../Tesseract.swift/Rust/transports", features = ["client"]}
 #tesseract-swift-utils = { git = "https://github.com/tesseract-one/Tesseract.swift", tag = "0.5.2"}
 #tesseract-swift-transports = { git = "https://github.com/tesseract-one/Tesseract.swift", tag = "0.5.2", features = ["client"]}
 

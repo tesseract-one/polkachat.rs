@@ -18,7 +18,7 @@ use std::sync::Arc;
 
 use futures::executor;
 
-use tesseract::client::Service;
+use tesseract_one::client::Service;
 use tesseract_protocol_substrate::{AccountType, GetAccountResponse, Substrate, SubstrateService};
 
 use subxt::{

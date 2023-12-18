@@ -18,7 +18,7 @@ buildscript {
         rustNdkTargets = targetsProp == null ? DEFAULT_NDK_TARGETS : targetsProp
 
         composeVersion = '1.4.3'
-        tesseractVersion = '0.5.4'
+        tesseractVersion = '0.5.6'
     }
 }
 

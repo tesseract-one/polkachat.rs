@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use subxt::Metadata;
-use tesseract::client::Service;
+use tesseract_one::client::Service;
 use tesseract_protocol_substrate::Substrate;
 
 use crate::Result;

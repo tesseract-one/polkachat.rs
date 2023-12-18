@@ -3,7 +3,7 @@ use std::{future::Future, sync::Arc};
 use futures::lock::Mutex;
 use tokio::runtime::Runtime;
 
-use tesseract::client::{Service, Tesseract};
+use tesseract_one::client::{Service, Tesseract};
 use tesseract_protocol_substrate::{AccountType, Substrate, SubstrateService};
 
 use subxt::Metadata;

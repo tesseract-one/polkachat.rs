@@ -10,15 +10,28 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://maven.tesseract.one/Tesseract.android")
+        }
     }
 }
 
-includeBuild('../Tesseract.android') {
-    dependencySubstitution {
-        substitute module('one.tesseract:crabdroid') using project(':java:crabdroid')
-        substitute module('one.tesseract:detached-activity') using project(':java:detached-activity')
-        substitute module('one.tesseract:base') using project(':java:base')
-        substitute module('one.tesseract:client-transport-ipc') using project(':java:client-transport-ipc')
+def projectDir = rootProject.projectDir
+def localPropsFile = new File(projectDir, 'local.properties')
+Properties properties = new Properties()
+properties.load(localPropsFile.newDataInputStream())
+
+def devModeString = properties.getProperty('tesseract.devmode')
+def devMode = devModeString == null ? false : devModeString == "true"
+
+if(devMode) {
+    includeBuild('../Tesseract.android') {
+        dependencySubstitution {
+            substitute module('one.tesseract:crabdroid') using project(':java:crabdroid')
+            substitute module('one.tesseract:detached-activity') using project(':java:detached-activity')
+            substitute module('one.tesseract:base') using project(':java:base')
+            substitute module('one.tesseract:client-transport-ipc') using project(':java:client-transport-ipc')
+        }
     }
 }
 

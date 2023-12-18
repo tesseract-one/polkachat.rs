@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use async_trait::async_trait;
 
-use tesseract::client::{Delegate, transport::Status};
+use tesseract_one::client::{Delegate, transport::Status};
 
 use crate::{UI, UIProtocol};
 
