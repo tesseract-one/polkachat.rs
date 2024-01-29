@@ -15,7 +15,7 @@ extension CArray_CString: CCopyConvertArrayPtr {
         element.copied()
     }
 
-    public mutating func _free() {
+    public mutating func free() {
         polkachat_carray_cstring_drop(&self)
     }
 

@@ -14,7 +14,7 @@ pub (crate) enum Error {
 
     #[cfg(target_os = "ios")]
     #[error("IOS error: {0}")]
-    IOS(#[from] tesseract_swift_transports::error::TesseractSwiftError),
+    IOS(#[from] tesseract_swift::error::TesseractSwiftError),
 
     #[error("Invalid public key")]
     PublicKey,

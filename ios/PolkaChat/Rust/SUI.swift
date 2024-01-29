@@ -10,7 +10,7 @@ import Foundation
 import TesseractTransportsClient
 import CPolkaChat
 
-extension SUI: CSwiftDropPtr {
+extension SUI: CObjectPtr {
     public typealias SObject = UI
 }
 

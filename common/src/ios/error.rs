@@ -1,5 +1,5 @@
-use tesseract_swift_transports::error::TesseractSwiftError;
-use tesseract_swift_utils::error::CError;
+use tesseract_swift::error::TesseractSwiftError;
+use tesseract_swift::utils::error::CError;
 
 use crate::error::Error;
 
@@ -38,8 +38,8 @@ impl From<CError> for Error {
     }
 }
 
-impl From<tesseract::Error> for Error {
-    fn from(value: tesseract::Error) -> Self {
+impl From<tesseract_one::Error> for Error {
+    fn from(value: tesseract_one::Error) -> Self {
         let tesseract: TesseractSwiftError = value.into();
         tesseract.into()
     }

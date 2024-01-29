@@ -6,9 +6,9 @@ use std::{
 
 use errorcon::convertible::ErrorContext;
 
-use tesseract_swift_transports::client::ClientTransport;
+use tesseract_swift::client::transport::ClientTransport;
 
-use tesseract_swift_utils::{
+use tesseract_swift::utils::{
     Nothing,
     array::CArray,
     error::CError,

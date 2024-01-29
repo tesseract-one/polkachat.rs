@@ -1,6 +1,6 @@
 use std::mem::{ManuallyDrop, MaybeUninit};
 
-use tesseract_swift_utils::{ptr::CAnyDropPtr, string::{CStringRef, CString}, traits::AsCRef, error::CError};
+use tesseract_swift::utils::{ptr::CAnyDropPtr, string::{CStringRef, CString}, traits::AsCRef, error::CError};
 
 use crate::Result as PCResult;
 
